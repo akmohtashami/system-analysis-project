@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class BaseTest(unittest.TestCase):
 
-    URL_PREFIX = "http://localhost/"
+    URL_PREFIX = "http://localhost:8000/"
 
     def setUp(self):
         self.driver = webdriver.Firefox(
