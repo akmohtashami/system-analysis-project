@@ -1,8 +1,10 @@
 from selenium.common.exceptions import StaleElementReferenceException
 
 from tests.base import BaseTest
+from tests.email_validate import EmailValidate
 
-class RegisterTest(BaseTest):
+
+class RegisterTest(BaseTest, EmailValidate("email")):
     def setUp(self):
         super(RegisterTest, self).setUp()
         self.getURL('register')
@@ -53,33 +55,6 @@ class RegisterTest(BaseTest):
         self.name.clear()
         self.submitForm()
         self.assertTrue("error" in self.firstname.get_attribute("class"))
-
-    def test_empty_email(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
-
-    def test_invalid_email_no_at_sign(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("test.com")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
-
-    def test_invalid_email_no_tld(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("test@gmail")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
-
-    def test_invalid_email_no_address(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("@gmail.com")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
 
     def test_short_password(self):
         self.findAndFillForm()

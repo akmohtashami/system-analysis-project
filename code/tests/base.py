@@ -26,5 +26,8 @@ class BaseTest(unittest.TestCase):
     def wait_for(self, func, timeout=10):
         WebDriverWait(self.driver, timeout).until(func)
 
+    def login(self, email, password):
+        pass
+
     def tearDown(self):
         self.driver.close()
