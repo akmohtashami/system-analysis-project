@@ -11,7 +11,7 @@ class ContactAdminTest(BaseTest):
         self.getURL("contact")
 
     def findForm(self):
-        self.form = self.driver.find_element_by_xpath("form[name='contact_form']")
+        self.form = self.driver.find_element_by_css_selector("form[name='contact_form']")
         self.name = self.form.find_element_by_name('name')
         self.email = self.form.find_element_by_name('email')
         self.text = self.form.find_element_by_name('text')
@@ -28,17 +28,17 @@ class ContactAdminTest(BaseTest):
     def test_text_multi_line(self):
         self.findForm()
         self.fillForm()
-        old_len = len(self.text.text)
+        old_len = len(self.text.get_attribute("value"))
         self.text.send_keys(Keys.ENTER)
         self.text.send_keys("And the test shall continue")
-        new_len = len(self.text.text)
+        new_len = len(self.text.get_attribute("value"))
         self.assertNotEqual(old_len, new_len, "Multi-line text must be allowed")
 
     def submit_form(self):
         # Not using self.form.submit deliberately
         self.submit_button.click()
 
-        def form_has_gone_stale():
+        def form_has_gone_stale(driver):
             try:
                 self.form.find_element_by_name('name')
                 return False
