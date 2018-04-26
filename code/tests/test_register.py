@@ -47,21 +47,18 @@ class RegisterTest(BaseTest):
         self.findAndFillForm()
         self.submitForm()
         self.form.find_element_by_class_name("success")
-        self.checkUserRegistered()
 
     def test_empty_name(self):
         self.findAndFillForm()
         self.name.clear()
         self.submitForm()
         self.assertTrue("error" in self.firstname.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_empty_email(self):
         self.findAndFillForm()
         self.email.clear()
         self.submitForm()
         self.assertTrue("error" in self.email.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_invalid_email_no_at_sign(self):
         self.findAndFillForm()
@@ -69,7 +66,6 @@ class RegisterTest(BaseTest):
         self.email.send_keys("test.com")
         self.submitForm()
         self.assertTrue("error" in self.email.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_invalid_email_no_tld(self):
         self.findAndFillForm()
@@ -77,7 +73,6 @@ class RegisterTest(BaseTest):
         self.email.send_keys("test@gmail")
         self.submitForm()
         self.assertTrue("error" in self.email.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_invalid_email_no_address(self):
         self.findAndFillForm()
@@ -85,7 +80,6 @@ class RegisterTest(BaseTest):
         self.email.send_keys("@gmail.com")
         self.submitForm()
         self.assertTrue("error" in self.email.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_short_password(self):
         self.findAndFillForm()
@@ -94,14 +88,12 @@ class RegisterTest(BaseTest):
         self.password.send_keys("passw")
         self.password_confirmation.send_keys("passw")
         self.assertTrue("error" in self.password.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_different_password_confirmation(self):
         self.findAndFillForm()
         self.password_confirmation.clear()
         self.password_confirmation.send_keys("password:D")
         self.assertTrue("error" in self.password_confirmation.get_attribute("class"))
-        self.checkUserNotRegistered()
 
     def test_repetitious_email(self):
         self.findAndFillForm()
