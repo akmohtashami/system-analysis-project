@@ -9,15 +9,13 @@ class RegisterTest(BaseTest):
 
     def findAndFillForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='register_form']")
-        self.firstname = self.driver.find_element_by_name('firstname')
-        self.lastname = self.driver.find_element_by_name('lastname')
+        self.name = self.driver.find_element_by_name('name')
         self.email = self.driver.find_element_by_name('email')
         self.password = self.driver.find_element_by_name('password')
         self.password_confirmation = self.driver.find_element_by_name('passwordConfirmation')
         self.submit_button = self.driver.find_element_by_name('submit')
 
-        self.firstname.send_keys('firstname')
-        self.lastname.send_keys('lastname')
+        self.name.send_keys('test')
         self.email.send_keys('test@gmail.com')
         self.password.send_keys('password')
         self.password_confirmation.send_keys('password')
@@ -26,9 +24,9 @@ class RegisterTest(BaseTest):
         # Not using self.form.submit deliberately
         self.submit_button.click()
 
-        def form_has_gone_stale():
+        def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('firstname')
+                self.form.find_element_by_name('name')
                 return False
             except StaleElementReferenceException:
                 return True
@@ -51,18 +49,11 @@ class RegisterTest(BaseTest):
         self.form.find_element_by_class_name("success")
         self.checkUserRegistered()
 
-    def test_empty_firstname(self):
+    def test_empty_name(self):
         self.findAndFillForm()
-        self.firstname.clear()
+        self.name.clear()
         self.submitForm()
         self.assertTrue("error" in self.firstname.get_attribute("class"))
-        self.checkUserNotRegistered()
-
-    def test_empty_lastname(self):
-        self.findAndFillForm()
-        self.lastname.clear()
-        self.submitForm()
-        self.assertTrue("error" in self.lastname.get_attribute("class"))
         self.checkUserNotRegistered()
 
     def test_empty_email(self):
@@ -117,8 +108,7 @@ class RegisterTest(BaseTest):
         self.submitForm()
         self.form.find_element_by_class_name("success")
 
-        self.firstname.clear()
-        self.lastname.clear()
+        self.name.clear()
         self.email.clear()
         self.password.clear()
         self.password_confirmation.clear()
