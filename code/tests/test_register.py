@@ -34,12 +34,6 @@ class RegisterTest(BaseTest):
         self.wait_for(form_has_gone_stale)
         self.findAndFillForm()
 
-    def checkUserRegistered(self):
-        pass
-
-    def checkUserNotRegistered(self):
-        pass
-
     def test_form_inputs(self):
         self.findAndFillForm()
 
