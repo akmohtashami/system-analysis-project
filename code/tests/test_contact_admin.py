@@ -2,9 +2,10 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
 
 from tests.base import BaseTest
+from tests.email_validate import EmailValidate
 
 
-class ContactAdminTest(BaseTest):
+class ContactAdminTest(BaseTest, EmailValidate("email")):
 
     def setUp(self):
         super(ContactAdminTest, self).setUp()
@@ -21,17 +22,6 @@ class ContactAdminTest(BaseTest):
         self.email.send_keys("test@gmail.com")
         self.text.send_keys("This is a test")
 
-    def test_form_inputs(self):
-        self.findAndFillForm()
-
-    def test_text_multi_line(self):
-        self.findAndFillForm()
-        old_len = len(self.text.get_attribute("value"))
-        self.text.send_keys(Keys.ENTER)
-        self.text.send_keys("And the test shall continue")
-        new_len = len(self.text.get_attribute("value"))
-        self.assertNotEqual(old_len, new_len, "Multi-line text must be allowed")
-
     def submitForm(self):
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -45,6 +35,17 @@ class ContactAdminTest(BaseTest):
 
         self.wait_for(form_has_gone_stale)
         self.findAndFillForm()
+
+    def test_form_inputs(self):
+        self.findAndFillForm()
+
+    def test_text_multi_line(self):
+        self.findAndFillForm()
+        old_len = len(self.text.get_attribute("value"))
+        self.text.send_keys(Keys.ENTER)
+        self.text.send_keys("And the test shall continue")
+        new_len = len(self.text.get_attribute("value"))
+        self.assertNotEqual(old_len, new_len, "Multi-line text must be allowed")
 
     def test_ok_send(self):
         self.findAndFillForm()
@@ -63,31 +64,6 @@ class ContactAdminTest(BaseTest):
         self.submitForm()
         self.assertTrue("error" in self.name.get_attribute("class"))
 
-    def test_empty_email(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
 
-    def test_invalid_email_no_at_sign(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("salam")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
-
-    def test_invalid_email_no_tld(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("salam@gmail")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
-
-    def test_invalid_email_no_address(self):
-        self.findAndFillForm()
-        self.email.clear()
-        self.email.send_keys("@gmail.com")
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
 
 
