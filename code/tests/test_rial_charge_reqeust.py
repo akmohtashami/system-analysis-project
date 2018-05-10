@@ -41,7 +41,6 @@ class RialChargeRequestTest(BaseTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
-        self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
 
     def test_form_inputs(self):
         self.findAndFillForm()
@@ -49,10 +48,12 @@ class RialChargeRequestTest(BaseTest,
     def test_ok_send(self):
         self.findAndFillForm()
         self.submitForm()
+        self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
 
     def test_confirm(self):
         self.findAndFillForm()
         self.submitForm()
+        self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
         self.form = self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
         self.email = self.form.find_element_by_id('email')
         self.charge_amount = self.form.find_element_by_id('charge_amount')
