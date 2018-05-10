@@ -31,4 +31,6 @@ urlpatterns = [
             'path': 'rial-charge-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/done/', static.serve, kwargs={
         'path': 'rial-charge-done.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request-detail/', static.serve, kwargs={
+        'path': 'request-detail.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 ]
