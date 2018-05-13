@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tests.utils import createCustomer, createAgent, createManager
+from tests.utils import createCustomer, createAgent, createManager, createFreeRequest
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -60,6 +60,9 @@ class BaseTest(unittest.TestCase):
 
     def logout(self):
         pass
+
+    def createRequest(self):
+        createFreeRequest()
 
     def tearDown(self):
         self.driver.close()

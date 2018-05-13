@@ -2,14 +2,25 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 from tests.base import BaseTest
 
+
 class ProcessRequestTest(BaseTest):
     def setUp(self):
         super(ProcessRequestTest, self).setUp()
         self.loginAsAgnet()
-        self.getURL('handle-request')
+        self.getURL('handle_request')
+
+    def wait_until_list_is_gone(self):
+        def link_has_gone_stale(driver):
+            try:
+                self.table.get_attribute('innerHTML')
+                return False
+            except StaleElementReferenceException:
+                return True
+        self.wait_for(link_has_gone_stale)
 
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[id='charge_status_form']")
+        self.id = self.driver.find_element_by_id('id')
         self.name = self.driver.find_element_by_id('name')
         self.time = self.driver.find_element_by_id('time')
         self.request_type = self.driver.find_element_by_id('request_type')
@@ -17,28 +28,53 @@ class ProcessRequestTest(BaseTest):
         self.currency = self.driver.find_element_by_id('currency')
         self.status = self.driver.find_element_by_id('status')
 
-        self.accept = self.driver.find_element_by_name('accept')
-        self.reject = self.driver.find_element_by_name('reject')
-        self.accomplish = self.driver.find_element_by_name('accomplish')
-
     def selectOneRequest(self):
+        self.createRequest()
+        self.table = self.driver.find_element_by_id("requests")
         rows = self.table.find_elements_by_tag_name("tr")
         for tr in rows:
-            row = tr.find_element_by_tag_name("td")
+            row = tr.find_elements_by_tag_name("td")
             found = False
             for td in row:
-                try:
-                    td.find_element_by_tag_name("a").click()
-                    self.wait_until_list_is_gone()
+                if td.text == 'Free':
                     found = True
+            if not found:
+                continue
+            for td in row:
+                try:
+                    td.find_elements_by_tag_name("a").click()
+                    self.wait_until_list_is_gone()
+                    found = False
                     break
                 except:
                     pass
-            self.assertTrue(found)
+            self.assertTrue(not found)
             self.findForm()
-            if self.status.text == 'free':
-                return
-        self.assertTrue(False, 'free request not found!')
+            return
+        self.assertTrue(False, 'Free request not found!')
+
+    def findRequestByID(self, id):
+        self.getURL('handle_request')
+        self.createRequest()
+        self.table = self.driver.find_element_by_id("requests")
+        rows = self.table.find_elements_by_tag_name("tr")
+        for tr in rows:
+            row = tr.find_elements_by_tag_name("td")
+            if row[0].text != id:
+                continue
+            found = True
+            for td in row:
+                try:
+                    td.find_elements_by_tag_name("a").click()
+                    self.wait_until_list_is_gone()
+                    found = False
+                    break
+                except:
+                    pass
+            self.assertTrue(not found)
+            self.findForm()
+            return
+        self.assertTrue(False, 'Desired request not found!')
 
     def submitForm(self, button):
         # Not using self.form.submit deliberately
@@ -46,7 +82,7 @@ class ProcessRequestTest(BaseTest):
 
         def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('name')
+                self.driver.find_element_by_id('requests')
                 return False
             except StaleElementReferenceException:
                 return True
@@ -54,70 +90,162 @@ class ProcessRequestTest(BaseTest):
         self.wait_for(form_has_gone_stale)
         self.findForm()
 
+    def loginWithManager(self):
+        self.logout()
+        self.loginAsManager()
+        self.getURL('handle_request')
+
     def test_select_one_request(self):
-        self.driver.find_element_by_id('requests')
         self.selectOneRequest()
 
     def test_ok_accept_request(self):
         self.selectOneRequest()
-        self.driver.execute_script("arguments[0].innerText = 'free'", self.status)
+        self.accept = self.driver.find_element_by_name('accept')
         self.submitForm(self.accept)
-        self.assertTrue(self.status.text == 'processing')
+        self.assertTrue(self.status.text == 'Processing')
         self.form.find_element_by_class_name("success")
+
+    def test_double_accept(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        try:
+            self.accept = self.driver.find_element_by_name('accept')
+            self.assertTrue(False, 'Double accept is possible')
+        except:
+            pass
 
     def test_ok_reject_request(self):
         self.selectOneRequest()
-        self.driver.execute_script("arguments[0].innerText = 'processing'", self.status)
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.reject = self.driver.find_element_by_name('reject')
         self.submitForm(self.reject)
-        self.assertTrue(self.status.text == 'free')
+        self.assertTrue(self.status.text == 'Free')
         self.form.find_element_by_class_name("success")
+
+    def test_Free_reject(self):
+        self.selectOneRequest()
+        try:
+            self.reject = self.driver.find_element_by_name('reject')
+            self.assertTrue(False, 'Reject free is possible')
+        except:
+            pass
+
+    def test_free_done(self):
+        self.selectOneRequest()
+        try:
+            self.accomplish = self.driver.find_element_by_name('accomplish')
+            self.assertTrue(False, 'Accomplish free is possible')
+        except:
+            pass
 
     def test_ok_accomplish_request(self):
         self.selectOneRequest()
-        self.driver.execute_script("arguments[0].innerText = 'processing'", self.status)
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.accomplish = self.driver.find_element_by_name('accomplish')
         self.submitForm(self.accomplish)
-        self.assertTrue(self.status.text == 'done')
+        self.assertTrue(self.status.text == 'Done')
         self.form.find_element_by_class_name("success")
 
+    def test_accomplish_accept(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.accomplish = self.driver.find_element_by_name('accomplish')
+        self.submitForm(self.accomplish)
+        try:
+            self.accept = self.driver.find_element_by_name('accept')
+            self.assertTrue(False, 'accept done is possible')
+        except:
+            pass
 
+    def test_accomplish_reject(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.accomplish = self.driver.find_element_by_name('accomplish')
+        self.submitForm(self.accomplish)
+        try:
+            self.reject = self.driver.find_element_by_name('reject')
+            self.assertTrue(False, 'Reject done is possible')
+        except:
+            pass
 
+    def test_double_accomplish(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.accomplish = self.driver.find_element_by_name('accomplish')
+        self.submitForm(self.accomplish)
+        try:
+            self.accomplish = self.driver.find_element_by_name('accomplish')
+            self.assertTrue(False, 'Accomplish done is possible')
+        except:
+            pass
 
+    def test_reject_others(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        request_id = self.id.text
+        self.submitForm(self.accept)
+        self.logout()
+        self.loginAsAgnet(1)
+        self.findRequestByID(request_id)
+        try:
+            self.reject = self.driver.find_element_by_name('reject')
+            self.assertTrue(False, 'Reject others request is possible')
+        except:
+            pass
 
+    def test_accomplish_others(self):
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        request_id = self.id.text
+        self.submitForm(self.accept)
+        self.logout()
+        self.loginAsAgnet(1)
+        self.findRequestByID(request_id)
+        try:
+            self.accomplish = self.driver.find_element_by_name('accomplish')
+            self.assertTrue(False, 'Accomplish others request is possible')
+        except:
+            pass
 
-
-
-
-
-    def test_empty_name(self):
-        self.findForm()
-        self.name.clear()
-        self.submitForm()
-        self.assertTrue("error" in self.firstname.get_attribute("class"))
-
-    def test_short_password(self):
-        self.findForm()
-        self.password.clear()
-        self.password_confirmation.clear()
-        self.password.send_keys("passw")
-        self.password_confirmation.send_keys("passw")
-        self.assertTrue("error" in self.password.get_attribute("class"))
-
-    def test_different_password_confirmation(self):
-        self.findForm()
-        self.password_confirmation.clear()
-        self.password_confirmation.send_keys("password:D")
-        self.assertTrue("error" in self.password_confirmation.get_attribute("class"))
-
-    def test_repetitious_email(self):
-        self.findForm()
-        self.submitForm()
+    def test_manager_accept_request(self):
+        self.loginWithManager()
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.assertTrue(self.status.text == 'Processing')
         self.form.find_element_by_class_name("success")
 
-        self.name.clear()
-        self.email.clear()
-        self.password.clear()
-        self.password_confirmation.clear()
+    def test_manager_accomplish_request(self):
+        self.loginWithManager()
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.accomplish = self.driver.find_element_by_name('accomplish')
+        self.submitForm(self.accomplish)
+        self.assertTrue(self.status.text == 'Done')
+        self.form.find_element_by_class_name("success")
 
-        self.findForm()
-        self.submitForm()
-        self.assertTrue("error" in self.email.get_attribute("class"))
+    def test_manager_reject_request(self):
+        self.loginWithManager()
+        self.selectOneRequest()
+        self.accept = self.driver.find_element_by_name('accept')
+        self.submitForm(self.accept)
+        self.reject = self.driver.find_element_by_name('reject')
+        self.submitForm(self.reject)
+        self.assertTrue(self.status.text == 'Free')
+        self.form.find_element_by_class_name("success")
+
+    def test__accept_request(self):
+        self.logout()
+        self.loginAsCustomer()
+        try:
+            self.getURL('handle_request')
+            self.assertTrue(False, 'user can see list of requests.')
+        except:
+            pass

@@ -32,7 +32,7 @@ urlpatterns = [
     path('charge/done/', static.serve, kwargs={
         'path': 'rial-charge-done.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('handle_request/', static.serve, kwargs={
-        'path': 'request-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+        'path': 'requests-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('handle_request/1/', static.serve, kwargs={
         'path': 'request-detail.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('requests/', static.serve, kwargs={

@@ -7,3 +7,5 @@ def createAgent(email, password, rial):
 def createManager(email, password):
     pass
 
+def createFreeRequest():
+    pass
