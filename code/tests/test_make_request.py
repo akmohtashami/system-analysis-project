@@ -1,5 +1,5 @@
 from selenium.common.exceptions import StaleElementReferenceException
-
+from selenium.webdriver.common.keys import Keys
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
@@ -7,23 +7,22 @@ from tests.email_validate import EmailValidate
 from tests.utils import createCustomer
 
 
-class WithdrawRequestTest(BaseTest,
-                          AmountValidate("amount")):
+class MakeRequestTest(BaseTest, AmountValidate("amount")):
 
     def setUp(self):
-        super(WithdrawRequestTest, self).setUp()
+        super(MakeRequestTest, self).setUp()
         self.loginAsCustomer()
-        self.getURL("withdraw")
+        self.getURL("request/toefl/")
 
     def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[id='withdraw_form']")
+        self.form = self.driver.find_element_by_css_selector("form[id='request_fill_form']")
         self.amount = self.form.find_element_by_name('amount')
-        self.sheba = self.form.find_element_by_name('sheba')
+        self.text = self.form.find_element_by_name('text')
         self.submit_button = self.form.find_element_by_name("submit")
 
     def fillForm(self):
         self.amount.send_keys("100")
-        self.sheba.send_keys("IR062960000000100324200001")
+        self.text.send_keys("Some Description.")
 
     def findAndFillForm(self):
         self.findForm()
@@ -50,22 +49,6 @@ class WithdrawRequestTest(BaseTest,
         self.submitForm()
         self.driver.find_element_by_css_selector("form[name='confirm_form']")
 
-    def test_invalid_sheba(self):
-        self.findAndFillForm()
-        self.sheba.clear()
-        self.sheba.send_keys('A')
-        self.submitForm()
-        self.findForm()
-        self.assertTrue("error" in self.sheba.get_attribute("class"))
-
-    def test_empty_sheba(self):
-        self.findAndFillForm()
-        self.sheba.clear()
-        self.submitForm()
-        self.findForm()
-        self.assertTrue("error" in self.sheba.get_attribute("class"))
-
-
     def test_confirm(self):
         self.findAndFillForm()
         self.submitForm()
@@ -89,8 +72,17 @@ class WithdrawRequestTest(BaseTest,
 
         self.assertTrue("history" in self.driver.current_url, "Must be redirected to history")
 
+    def test_text_multi_line(self):
+        self.findAndFillForm()
+        old_len = len(self.text.get_attribute("value"))
+        self.text.send_keys(Keys.ENTER)
+        self.text.send_keys("And the test shall continue")
+        new_len = len(self.text.get_attribute("value"))
+        self.assertNotEqual(old_len, new_len, "Multi-line text must be allowed")
 
-
-
-
+    def test_allow_empty_text(self):
+        self.findAndFillForm()
+        self.text.clear()
+        self.submitForm()
+        self.driver.find_element_by_css_selector("form[name='confirm_form']")
 
