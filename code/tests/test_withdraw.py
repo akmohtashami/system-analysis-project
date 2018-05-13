@@ -7,23 +7,23 @@ from tests.email_validate import EmailValidate
 from tests.utils import createCustomer
 
 
-class RialChargeRequestTest(BaseTest,
-                            EmailValidate("email"),
-                            AmountValidate("amount")):
+class WithdrawRequestTest(BaseTest,
+                          AmountValidate("amount")):
 
     def setUp(self):
-        super(RialChargeRequestTest, self).setUp()
-        self.getURL("charge")
+        super(WithdrawRequestTest, self).setUp()
+        self.loginAsCustomer()
+        self.getURL("withdraw")
 
     def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[name='charge_form']")
-        self.email = self.form.find_element_by_name('email')
+        self.form = self.driver.find_element_by_css_selector("form[id='withdraw_form']")
         self.amount = self.form.find_element_by_name('amount')
+        self.sheba = self.form.find_element_by_name('sheba')
         self.submit_button = self.form.find_element_by_name("submit")
 
     def fillForm(self):
-        self.email.send_keys("test@gmail.com")
-        self.amount.send_keys("20000")
+        self.amount.send_keys("100")
+        self.sheba.send_keys("IR062960000000100324200001")
 
     def findAndFillForm(self):
         self.findForm()
@@ -48,19 +48,31 @@ class RialChargeRequestTest(BaseTest,
     def test_ok_send(self):
         self.findAndFillForm()
         self.submitForm()
-        self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
+        self.driver.find_element_by_css_selector("form[name='confirm_form']")
+
+    def test_invalid_sheba(self):
+        self.findAndFillForm()
+        self.sheba.clear()
+        self.sheba.send_keys('A')
+        self.submitForm()
+        self.findForm()
+        self.assertTrue("error" in self.sheba.get_attribute("class"))
+
+    def test_empty_sheba(self):
+        self.findAndFillForm()
+        self.sheba.clear()
+        self.submitForm()
+        self.findForm()
+        self.assertTrue("error" in self.sheba.get_attribute("class"))
+
 
     def test_confirm(self):
         self.findAndFillForm()
         self.submitForm()
-        self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
-        self.form = self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
-        self.email = self.form.find_element_by_id('email')
-        self.charge_amount = self.form.find_element_by_id('charge_amount')
-        self.due_amount = self.form.find_element_by_id('due_amount')
+        self.driver.find_element_by_css_selector("form[name='confirm_form']")
+        self.total_due = self.driver.find_element_by_id('due_amount')
+        self.form = self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.submit_button = self.form.find_element_by_name("submit")
-
-        self.charge_amount = int(self.charge_amount)
         self.due_amount = int(self.due_amount)
 
         # Not using self.form.submit deliberately
@@ -68,22 +80,14 @@ class RialChargeRequestTest(BaseTest,
 
         def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('name')
+                self.form.find_element_by_name('submit')
                 return False
             except StaleElementReferenceException:
                 return True
 
         self.wait_for(form_has_gone_stale)
 
-        self.assertTrue("shaparak" in self.driver.current_url, "Must be redirected to shaparak")
-
-    def test_logged_in_default_email(self):
-        email = "test@test.ir"
-        createCustomer(email, "pass1", 0, 0, 0)
-        self.login(email, "pass1")
-        self.findForm()
-        self.assertEqual(self.email.text, email,
-                         "Default value for email when charging should be current user")
+        self.assertTrue("history" in self.driver.current_url, "Must be redirected to history")
 
 
 

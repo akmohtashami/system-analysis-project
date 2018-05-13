@@ -17,7 +17,7 @@ class ManageRequestTypeTest(BaseTest):
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
             try:
-                self.add_link.get_attribute('innerHTML')
+                self.table.find_element_by_tag_name("tr")
                 return False
             except StaleElementReferenceException:
                 return True
@@ -62,12 +62,9 @@ class ManageRequestTypeTest(BaseTest):
         self.wait_until_list_is_gone()
         self.findForm()
 
-    def test_list(self):
-        self.add_link = self.driver.find_element_by_partial_link_text("Add")
-        self.table = self.driver.find_element_by_id("request-types")
 
     def findEditForm(self):
-        first_row = self.table.find_elements_by_tag_name("tr")[1].find_element_by_tag_name("td")
+        first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
             try:
@@ -80,6 +77,10 @@ class ManageRequestTypeTest(BaseTest):
         self.assertTrue(found)
         self.findForm()
 
+    def test_list(self):
+        self.add_link = self.driver.find_element_by_partial_link_text("Add")
+        self.table = self.driver.find_element_by_id("request-types")
+
     def test_add_submit(self):
         self.findAddForm()
         self.fillForm()
@@ -91,8 +92,17 @@ class ManageRequestTypeTest(BaseTest):
         self.assertTrue(len(self.short_name.text) > 0)
         self.assertTrue(len(self.name.text) > 0)
         self.assertTrue(len(self.fee.text) > 0)
+        self.name.clear()
+        self.name.send_keys("EDITED")
         self.submitForm()
         self.test_list()
+        first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
+        found = False
+        for td in first_row:
+            if "EDITED" in td.get_attribute('innerHTML'):
+                found = True
+                break
+        self.assertTrue(found)
 
     def test_short_name_in_add(self):
         self.findAddForm()
@@ -106,6 +116,32 @@ class ManageRequestTypeTest(BaseTest):
         self.findEditForm()
         self.short_name.clear()
         self.short_name.send_keys("Aa aa")
+        self.submitForm()
+        self.findForm()
+
+    def test_empty_short_name_in_add(self):
+        self.findAddForm()
+        self.fillForm()
+        self.short_name.clear()
+        self.submitForm()
+        self.findForm()
+
+    def test_empty_short_name_in_edit(self):
+        self.findEditForm()
+        self.short_name.clear()
+        self.submitForm()
+        self.findForm()
+
+    def test_empty_name_in_add(self):
+        self.findAddForm()
+        self.fillForm()
+        self.name.clear()
+        self.submitForm()
+        self.findForm()
+
+    def test_empty_name_in_edit(self):
+        self.findEditForm()
+        self.name.clear()
         self.submitForm()
         self.findForm()
 
