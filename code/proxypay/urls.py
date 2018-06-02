@@ -25,8 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('register/', static.serve, kwargs={
-            'path': 'register.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/', static.serve, kwargs={
             'path': 'rial-charge-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/confirm/', static.serve, kwargs={
