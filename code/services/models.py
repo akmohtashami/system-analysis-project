@@ -1,4 +1,4 @@
-from enumfields import Enum, EnumField
+from enumfields import EnumField
 
 from django.core.validators import URLValidator
 from django.db import models
@@ -7,20 +7,16 @@ from django.utils.translation import ugettext_lazy as _
 from wallet.models import Currency
 
 
-class RequestTypeStatus(Enum):
-    show = 'Show'
-    hide = 'Hide'
-
-
-class RequestType(models.Model):
+class ServiceType(models.Model):
     short_name = models.CharField(
         verbose_name=_("short name"),
         unique=True,
-        null=False,
+        max_length=255,
         validators=[URLValidator()]
     )
     name = models.CharField(
-        verbose_name=_("name")
+        verbose_name=_("name"),
+        max_length=255,
     )
     currency = EnumField(
         Currency,
@@ -30,7 +26,8 @@ class RequestType(models.Model):
         verbose_name=_("transaction fee"),
         default=0
     )
-    status = EnumField(
-        RequestTypeStatus,
-        verbose_name=_("status")
+    is_active = models.BooleanField(
+        verbose_name=_("active"),
+        default=True,
+        help_text=_("Designate whether this type of requests can be created.")
     )

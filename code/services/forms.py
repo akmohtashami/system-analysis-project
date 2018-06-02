@@ -1,15 +1,16 @@
 from django.forms import ModelForm
 
-from services.models import RequestType
+from services.models import ServiceType
 
 
-class RequestTypeForm(ModelForm):
+class AddServiceTypeForm(ModelForm):
     class Meta:
-        model = RequestType
-        fields = ['short_name', 'name', 'currency', 'fee', 'status']
+        model = ServiceType
+        fields = ['short_name', 'name', 'currency', 'fee', 'is_active']
         #widgets = {
         #    'currency':
         #}
 
     def save(self, commit=True):
-        pass
+        service_type = super(AddServiceTypeForm, self).save(commit)
+        return service_type

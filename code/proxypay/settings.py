@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 
     # Application
     'users',
+    'services',
+    'wallet',
 
     # Vendors
     'semanticuiforms'
