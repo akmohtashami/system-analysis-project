@@ -1,0 +1,15 @@
+@font-face {
+    font-family: "IranianSans";
+    src: url('iraniansans/irsans.ttf');
+}
+
+@font-face {
+    font-family: "IranianSans";
+    src: url('iraniansans/irsansb.ttf');
+    font-weight: bold;
+}
+
+body, html {
+    direction: rtl;
+    font-family: IranianSans, Tahoma;
+}
