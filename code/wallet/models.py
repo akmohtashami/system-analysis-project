@@ -1,3 +1,8 @@
+from enum import Enum
+
 from django.db import models
 
-# Create your models here.
+class Currency(Enum):
+    IRR = 'Rial'
+    USD = 'Dollar'
+    EUR = 'Euro'
