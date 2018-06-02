@@ -18,8 +18,10 @@ import os
 from django.conf import settings
 from django.contrib.staticfiles.views import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path, include
+
 urlpatterns = [
+    re_path('^users/', include('users.urls', namespace='users')),
     path('admin/', admin.site.urls),
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
