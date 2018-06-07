@@ -7,12 +7,12 @@ from tests.email_validate import EmailValidate
 from tests.utils import createCustomer
 
 
-class ManageRequestTypeTest(BaseTest):
+class ManageStaticPagesTest(BaseTest):
 
     def setUp(self):
-        super(ManageRequestTypeTest, self).setUp()
+        super(ManageStaticPagesTest, self).setUp()
         self.loginAsManager()
-        self.getURL("request-types")
+        self.getURL("static-pages")
 
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
@@ -24,23 +24,17 @@ class ManageRequestTypeTest(BaseTest):
         self.wait_for(link_has_gone_stale)
 
     def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[name='request_type_form']")
+        self.form = self.driver.find_element_by_css_selector("form[name='static_page_form']")
         self.short_name = self.form.find_element_by_name("short_name")
         self.name = self.form.find_element_by_name("name")
-        self.currency = Select(self.form.find_element_by_name("currency"))
-        self.fee = self.form.find_element_by_name("fee")
         self.visible = self.form.find_element_by_name("visible")
         self.description = self.form.find_element_by_name("text")
         self.submit_button = self.form.find_element_by_name("submit")
 
     def fillForm(self):
-        self.short_name.send_keys("toefl")
-        self.name.send_keys("TOEFL")
-        self.currency.select_by_value("USD")
-        self.fee.send_keys("7")
+        self.short_name.send_keys("static_page")
+        self.name.send_keys("static page")
         self.description.send_keys("Some description")
-        if not self.visible.is_selected():
-            self.visible.click()
 
     def findAndFillForm(self):
         self.findForm()
@@ -95,7 +89,7 @@ class ManageRequestTypeTest(BaseTest):
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
-            if "TOEFL" in td.get_attribute('innerHTML'):
+            if "static page" in td.get_attribute('innerHTML'):
                 found = True
                 break
         self.assertTrue(found)
@@ -104,7 +98,7 @@ class ManageRequestTypeTest(BaseTest):
         self.findAddForm()
         self.fillForm()
         self.submitForm()
-        self.getURL("request/toefl")
+        self.getURL("page/static_page")
         self.driver.find_element_by_id("description")
 
     def test_visibilty_false(self):
@@ -112,7 +106,7 @@ class ManageRequestTypeTest(BaseTest):
         self.fillForm()
         self.visible.click()
         self.submitForm()
-        self.getURL("request/toefl")
+        self.getURL("page/static_page")
         error = False
         try:
             self.driver.find_element_by_id("description")
@@ -124,7 +118,6 @@ class ManageRequestTypeTest(BaseTest):
         self.findEditForm()
         self.assertTrue(len(self.short_name.text) > 0)
         self.assertTrue(len(self.name.text) > 0)
-        self.assertTrue(len(self.fee.text) > 0)
         self.name.clear()
         self.name.send_keys("EDITED")
         self.submitForm()

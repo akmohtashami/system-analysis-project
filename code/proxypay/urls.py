@@ -24,6 +24,7 @@ urlpatterns = [
     re_path('^users/', include('users.urls', namespace='users')),
     re_path('^services/', include('services.urls', namespace='services')),
     path('admin/', admin.site.urls),
+
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('register/', static.serve, kwargs={
@@ -32,28 +33,41 @@ urlpatterns = [
             'path': 'login.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('change_password/', static.serve, kwargs={
             'path': 'change_password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('charge/', static.serve, kwargs={
             'path': 'rial-charge-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/confirm/', static.serve, kwargs={
             'path': 'rial-charge-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/done/', static.serve, kwargs={
         'path': 'rial-charge-done.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('handle_request/', static.serve, kwargs={
         'path': 'requests-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('handle_request/1/', static.serve, kwargs={
         'path': 'request-detail.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('requests/', static.serve, kwargs={
         'path': 'request-types-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('request/toefl/edit/', static.serve, kwargs={
+    path('requests/add/', static.serve, kwargs={
         'path': 'request-type-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('request/add/', static.serve, kwargs={
+    path('requests/toefl/edit/', static.serve, kwargs={
         'path': 'request-type-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('request/toefl/', static.serve, kwargs={
         'path': 'request-type-description.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('request/toefl/confirm/', static.serve, kwargs={
         'path': 'request-type-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('request/history/', static.serve, kwargs={
+    path('requests/history/', static.serve, kwargs={
         'path': 'request-history.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
+    path('pages/', static.serve, kwargs={
+        'path': 'static-pages-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('pages/add/', static.serve, kwargs={
+        'path': 'static-page-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('pages/static_page/edit/', static.serve, kwargs={
+        'path': 'static-page-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('page/static_page/', static.serve, kwargs={
+        'path': 'static-page-description.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('withdraw/', static.serve, kwargs={
         'path': 'withdraw-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 ]

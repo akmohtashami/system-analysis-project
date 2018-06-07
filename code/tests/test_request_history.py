@@ -12,7 +12,7 @@ class RequestHistoryTest(BaseTest):
     def setUp(self):
         super(RequestHistoryTest, self).setUp()
         self.loginAsCustomer()
-        self.getURL("request/history")
+        self.getURL("requests/history")
 
     def test_history(self):
         history_part = self.driver.find_element_by_id("history")
