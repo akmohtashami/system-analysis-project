@@ -11,6 +11,7 @@ class RialChargeRequestTest(BaseTest):
 
     def setUp(self):
         super(RialChargeRequestTest, self).setUp()
+        # TODO: POST SOMETHING TO FAKE BANK DATA
         self.getURL("charge/done")
 
     def test_result_shown(self):

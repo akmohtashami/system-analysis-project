@@ -7,13 +7,7 @@ from tests.email_validate import EmailValidate
 from tests.utils import createCustomer
 
 
-class WithdrawRequestTest(BaseTest,
-                          AmountValidate("amount")):
-
-    def setUp(self):
-        super(WithdrawRequestTest, self).setUp()
-        self.loginAsCustomer()
-        self.getURL("withdraw")
+class WithdrawRequestTestBase(AmountValidate("amount")):
 
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[id='withdraw_form']")
@@ -65,7 +59,6 @@ class WithdrawRequestTest(BaseTest,
         self.findForm()
         self.assertTrue("error" in self.sheba.get_attribute("class"))
 
-
     def test_confirm(self):
         self.findAndFillForm()
         self.submitForm()
@@ -90,7 +83,15 @@ class WithdrawRequestTest(BaseTest,
         self.assertTrue("history" in self.driver.current_url, "Must be redirected to history")
 
 
+class WithdrawRequestTestForCustomer(BaseTest, WithdrawRequestTestBase):
+    def setUp(self):
+        super(WithdrawRequestTestBase, self).setUp()
+        self.loginAsCustomer()
+        self.getURL("withdraw")
 
 
-
-
+class WithdrawRequestTestForAgent(BaseTest, WithdrawRequestTestBase):
+    def setUp(self):
+        super(WithdrawRequestTestBase, self).setUp()
+        self.loginAsAgnet()
+        self.getURL("withdraw")

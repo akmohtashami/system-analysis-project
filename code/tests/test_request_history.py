@@ -11,6 +11,7 @@ class RequestHistoryTest(BaseTest):
 
     def setUp(self):
         super(RequestHistoryTest, self).setUp()
+        self.loginAsCustomer()
         self.getURL("request/history")
 
     def test_history(self):

@@ -13,6 +13,7 @@ class RialChargeRequestTest(BaseTest,
 
     def setUp(self):
         super(RialChargeRequestTest, self).setUp()
+        self.loginAsCustomer()
         self.getURL("charge")
 
     def findForm(self):

@@ -26,10 +26,34 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('register/', static.serve, kwargs={
+            'path': 'register.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('login/', static.serve, kwargs={
+            'path': 'login.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('change_password/', static.serve, kwargs={
+            'path': 'change_password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/', static.serve, kwargs={
             'path': 'rial-charge-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/confirm/', static.serve, kwargs={
             'path': 'rial-charge-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('charge/done/', static.serve, kwargs={
         'path': 'rial-charge-done.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('handle_request/', static.serve, kwargs={
+        'path': 'requests-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('handle_request/1/', static.serve, kwargs={
+        'path': 'request-detail.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('requests/', static.serve, kwargs={
+        'path': 'request-types-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request/toefl/edit/', static.serve, kwargs={
+        'path': 'request-type-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request/add/', static.serve, kwargs={
+        'path': 'request-type-form.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request/toefl/', static.serve, kwargs={
+        'path': 'request-type-description.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request/toefl/confirm/', static.serve, kwargs={
+        'path': 'request-type-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('request/history/', static.serve, kwargs={
+        'path': 'request-history.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('withdraw/', static.serve, kwargs={
+        'path': 'withdraw-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 ]
