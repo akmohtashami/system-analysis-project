@@ -27,6 +27,9 @@ urlpatterns = [
 
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('send-email/', static.serve, kwargs={
+            'path': 'send-email.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('register/', static.serve, kwargs={
             'path': 'register.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('login/', static.serve, kwargs={
