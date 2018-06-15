@@ -12,6 +12,6 @@ __all__ = ["IndexView", ]
 class IndexView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            raise PermissionDenied
+            return render(request, "base.html")
         else:
             return HttpResponseRedirect(reverse("users:login"))

@@ -36,8 +36,8 @@ class RegisterView(NotAuthenticatedView):
     def post(self, request):
         form = RegisterForm(request.POST)
         if form.is_valid():
-            messages.success(request, _("You have been successfully registered."))
             form.save()
+            messages.success(request, _("You have been successfully registered."))
             return HttpResponseRedirect(reverse("users:login"))
         return self.render_form(request, form)
 

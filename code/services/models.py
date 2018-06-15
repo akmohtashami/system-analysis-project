@@ -1,9 +1,8 @@
-from enumfields import EnumField
-
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from proxypay.fields import EnumField
 from wallet.models import Currency
 
 

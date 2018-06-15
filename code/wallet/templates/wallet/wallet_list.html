@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <div class="ui centered relaxed grid">
+        {% for wallet in wallets %}
+            <div class="five wide column center aligned">
+                <i class="currency-flag currency-flag-lg currency-flag-{{wallet.currency.icon}}"></i>
+                <p>{{ wallet.credit|floatformat:"2" }} {{ wallet.currency.title }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

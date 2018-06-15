@@ -25,6 +25,7 @@ from proxypay.views import IndexView
 urlpatterns = [
     re_path('^$', IndexView.as_view(), name='index'),
     re_path('', include('users.urls', namespace='users')),
+    re_path('', include('wallet.urls', namespace='wallets')),
     re_path('^services/', include('services.urls', namespace='services')),
     re_path('', include('static_pages.urls', namespace='pages')),
     path('admin/', admin.site.urls),
