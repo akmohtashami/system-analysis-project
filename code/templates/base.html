@@ -1,26 +1,41 @@
 {% load i18n %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
     <head>
         <meta charset="UTF-8">
         <title>ProxyPay</title>
         <script src="{% static 'jquery/jquery-3.3.1.min.js' %}"></script>
-        {% if debug %}
+        {% if LANGUAGE_BIDI %}
             <link rel="stylesheet" href="{% static 'semanticui/semantic.rtl.css' %}" type="text/css">
-            <script src="{% static 'semanticui/semantic.js' %}"></script>
         {% else %}
-            <link rel="stylesheet" href="{% static 'semanticui/semantic.rtl.css' %}" type="text/css">
-            <script src="{% static 'semanticui/semantic.min.js' %}"></script>
+            <link rel="stylesheet" href="{% static 'semanticui/semantic.min.css' %}" type="text/css">
         {% endif %}
+        <script src="{% static 'semanticui/semantic.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css">
     </head>
-    <body dir="rtl">
+    <body {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+
         <div class="ui basic segment">
             <div class="ui container">
+                {% for message in messages %}
+                    <div class="ui {{ message.tags }} message">
+                    {{ message }}
+                    </div>
+                {% endfor %}
                 {% block content %}
                 {% endblock %}
             </div>
         </div>
+        <script>
+            $('.message .close')
+              .on('click', function() {
+                $(this)
+                  .closest('.message')
+                  .transition('fade')
+                ;
+              })
+            ;
+        </script>
     </body>
 </html>

@@ -20,9 +20,13 @@ from django.contrib.staticfiles.views import static
 from django.contrib import admin
 from django.urls import path, re_path, include
 
+from proxypay.views import IndexView
+
 urlpatterns = [
-    re_path('^users/', include('users.urls', namespace='users')),
+    re_path('^$', IndexView.as_view(), name='index'),
+    re_path('', include('users.urls', namespace='users')),
     re_path('^services/', include('services.urls', namespace='services')),
+    re_path('', include('static_pages.urls', namespace='pages')),
     path('admin/', admin.site.urls),
 
     path('contact/', static.serve, kwargs={

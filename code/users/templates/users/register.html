@@ -6,6 +6,6 @@
 <form action='' name="register_form" method="post" class="ui form">
     {% csrf_token %}
     {% render_form form %}
-    <button type="submit" class="ui button" name="submit">{% trans 'Register' %}</button>
+    <button type="submit" class="ui button positive" name="submit">{% trans 'Register' %}</button>
 </form>
 {% endblock %}
