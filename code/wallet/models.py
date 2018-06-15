@@ -19,7 +19,6 @@ class Currency(Enum):
         self.icon = icon
 
 
-
 class Wallet(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -41,8 +40,9 @@ class Wallet(models.Model):
 def create_wallets(sender, instance, created, *args, **kwargs):
     if created:
         for currency in Currency:
-            Wallet.objects.create(
-                owner=instance,
-                currency=currency,
-                credit=0
-            )
+            if instance.is_customer() or currency == Currency.IRR:
+                Wallet.objects.create(
+                    owner=instance,
+                    currency=currency,
+                    credit=0
+                )
