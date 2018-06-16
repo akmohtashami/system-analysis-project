@@ -3,18 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-<form action='' name="login_form" method="post" class="ui form {{ form.errors | yesno:'error,' }}">
-    {% if form.non_field_errors %}
-    <div class="ui error message">
-        {% for non_field_error in form.non_field_errors %}
-             <p>{{ non_field_error }}</p>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% csrf_token %}
-    {% render_form form %}
-    <button type="submit" class="ui button primary" name="submit">{% trans 'Login' %}</button>
+    {% trans 'Login' as login_button %}
+    {% include 'form.html' with form=form form_name='login_form' submit_button_text=login_button %}
     <p><a href="{% url 'users:register' %}">{% trans 'Not a member yet? register here.' %}</a></p>
-
-</form>
 {% endblock %}

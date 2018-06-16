@@ -3,9 +3,6 @@
 {% load i18n %}
 
 {% block content %}
-<form action='' name="register_form" method="post" class="ui form">
-    {% csrf_token %}
-    {% render_form form %}
-    <button type="submit" class="ui button positive" name="submit">{% trans 'Register' %}</button>
-</form>
+    {% trans 'Register' as register_button %}
+    {% include 'form.html' with form=form form_name='register_form' submit_button_text=register_button %}
 {% endblock %}

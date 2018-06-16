@@ -2,13 +2,12 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.ui import Select
 
 from tests.base import BaseTest
-from tests.utils import createCustomer
 
 
 class ExchangeTest(BaseTest):
     def setUp(self):
         super(ExchangeTest, self).setUp()
-        createCustomer('test@gmail.com', 'password', 1000000, 0, 0)
+        self.createCustomer('test@gmail.com', 'password', 1000000, 0, 0)
         self.login('test@gmail.com', 'password')
         self.getURL('exchange')
 
