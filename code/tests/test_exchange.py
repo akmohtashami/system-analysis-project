@@ -11,12 +11,18 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.loginAsCustomer()
         self.getURL('exchange')
 
+    def findConfirmationForm(self):
+        self.form = self.driver.find_element_by_css_selector("form[name='exchange_confirm_form']")
+        self.input_currency = self.driver.find_element_by_id('input_currency')
+        self.input_amount = self.driver.find_element_by_id('input_amount')
+        self.output_currency = self.driver.find_element_by_id('output_currency')
+        self.output_amount = self.driver.find_element_by_id('output_amount')
+        self.submit_button = self.driver.find_element_by_name('submit')
+
     def findForm(self, form_name="exchange_form"):
-        self.form = self.driver.find_element_by_css_selector("form[name='"+form_name+"']")
+        self.form = self.driver.find_element_by_css_selector("form[name='exchange_form']")
         self.input_currency = Select(self.driver.find_element_by_id('input_currency'))
-        if form_name != "exchange_form":
-            self.input_amount = self.driver.find_element_by_id('input_amount')
-            self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
+        self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
         self.output_amount = self.driver.find_element_by_id('output_amount')
         self.submit_button = self.driver.find_element_by_name('submit')
 
@@ -54,13 +60,13 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
     def test_submit_exchange(self):
         self.findAndFillForm()
         self.submitForm()
-        self.findForm("exchange_confirm_form")
+        self.findConfirmationForm()
 
     def test_confirm_exchange(self):
         self.findAndFillForm()
         receive_amount = int(self.output_amount.text)
         self.submitForm()
-        self.findForm("exchange_confirm_form")
+        self.findConfirmationForm()
         self.assertTrue(int(self.output_amount.text) == receive_amount)
         pay_amount = int(self.input_amount.text)
         self.submitForm()

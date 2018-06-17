@@ -1,9 +1,9 @@
 from tests.base import BaseTest
 
 
-class ExchangeTest(BaseTest):
+class WalletTest(BaseTest):
     def setUp(self):
-        super(ExchangeTest, self).setUp()
+        super(WalletTest, self).setUp()
         self.loginAsCustomer()
         self.getURL('wallet')
 

@@ -5,9 +5,9 @@ from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
 
 
-class ExchangeTest(BaseTest):
+class SimulateExchangeTest(BaseTest):
     def setUp(self):
-        super(ExchangeTest, self).setUp()
+        super(SimulateExchangeTest, self).setUp()
         self.loginAsCustomer()
         self.getURL('simulate_exchange')
 

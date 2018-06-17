@@ -1,13 +1,12 @@
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.ui import Select
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
 
 
-class ExchangeTest(BaseTest, AmountValidate("exchange_fee")):
+class ExchangeFeeTest(BaseTest, AmountValidate("exchange_fee")):
     def setUp(self):
-        super(ExchangeTest, self).setUp()
+        super(ExchangeFeeTest, self).setUp()
         self.loginAsManager()
         self.getURL('change_exchange_fee')
 
@@ -40,16 +39,14 @@ class ExchangeTest(BaseTest, AmountValidate("exchange_fee")):
     def test_form_inputs(self):
         self.findAndFillForm()
 
+    def test_ok_submit(self):
+        self.findAndFillForm()
+        self.submitForm()
+        self.driver.find_element_by_class_name("success")
+
     def test_change_exchange_fee(self):
         self.findAndFillForm()
         self.submitForm()
-        self.assertTrue(int(self.exchange_fee.text) == 10)
-
-    def test_invalid_exchange_fee(self):
-        self.findAndFillForm()
-        self.submitForm()
-        self.findAndFillForm()
-        self.exchange_fee.clear()
-        self.exchange_fee.send_keys('-10')
-        self.submitForm()
+        self.getURL('change_exchange_fee')
+        self.findForm()
         self.assertTrue(int(self.exchange_fee.text) == 10)
