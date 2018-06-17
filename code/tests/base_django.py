@@ -1,8 +1,13 @@
+from importlib import import_module
+
+from django.conf import settings
 from django.test import LiveServerTestCase
+
 
 from tests.base import BaseTest
 from users.models import User, UserType
 from wallet.models import Currency
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
 
 
 class BaseDjangoTest(BaseTest, LiveServerTestCase):
@@ -27,3 +32,23 @@ class BaseDjangoTest(BaseTest, LiveServerTestCase):
         user = User.objects.create(name=email, email=email, type=UserType.Admin)
         user.set_password(password)
         user.save()
+
+    def login(self, username, password):
+        user = User.objects.get(email=username)
+        SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+        self.driver.get('{}/page_404/'.format(self.live_server_url))
+
+        session = SessionStore()
+        session[SESSION_KEY] = User.objects.get(email=username).id
+        session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+        session[HASH_SESSION_KEY] = user.get_session_auth_hash()
+        session.save()
+
+        cookie = {
+            'name': settings.SESSION_COOKIE_NAME,
+            'value': session.session_key,
+            'path': '/',
+        }
+
+        self.driver.add_cookie(cookie)
+        self.driver.refresh()

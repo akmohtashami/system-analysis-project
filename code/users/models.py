@@ -63,6 +63,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
 
+    def notify_charge(self, amount):
+        pass
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

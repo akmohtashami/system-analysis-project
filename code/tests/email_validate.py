@@ -5,6 +5,7 @@ def EmailValidate(field_name):
         self.findAndFillForm()
         getattr(self, field_name).clear()
         self.submitForm()
+        self.findAndFillForm()
         self.assertTrue(self.checkHasClass(getattr(self, field_name), "error"))
     setattr(Class, 'test_empty_{}'.format(field_name), test_empty_email)
 

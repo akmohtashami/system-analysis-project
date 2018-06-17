@@ -16,7 +16,7 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.input_currency = Select(self.driver.find_element_by_id('input_currency'))
         if form_name != "exchange_form":
             self.input_amount = self.driver.find_element_by_id('input_amount')
-        self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
+            self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
         self.output_amount = self.driver.find_element_by_id('output_amount')
         self.submit_button = self.driver.find_element_by_name('submit')
 

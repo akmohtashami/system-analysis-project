@@ -12,3 +12,23 @@
 body, html {
     font-family: IranianSans, Tahoma;
 }
+
+.button.borderless {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.hidden.content {
+    display: none;
+}
+
+.message .close {
+    cursor:pointer;
+    opacity: 0.7;
+    transition: opacity 0.1s ease;
+}
+.message .close:hover {
+    cursor:pointer;
+    opacity: 1;
+    transition: opacity 0.1s ease;
+}

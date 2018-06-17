@@ -54,11 +54,6 @@ urlpatterns = [
     path('simulate_exchange/', static.serve, kwargs={
             'path': 'simulate-exchange.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
-    path('charge/', static.serve, kwargs={
-            'path': 'rial-charge-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('charge/confirm/', static.serve, kwargs={
-            'path': 'rial-charge-confirm.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-
     path('handle_request/', static.serve, kwargs={
         'path': 'requests-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('handle_request/1/', static.serve, kwargs={

@@ -10,6 +10,7 @@ class BaseTest(unittest.TestCase):
 
     CUSTOMER_INFO = [
         ["cust1@system.com", "pass", 100000, 100000, 100000],
+        ["cust2@system.com", "pass", 100000, 100000, 100000],
     ]
 
     AGENT_INFO = [
