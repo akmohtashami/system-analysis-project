@@ -51,17 +51,10 @@ class ChangePasswordTest(BaseTest):
         self.assertTrue(changedPassword)
         self.login(self.CUSTOMER_INFO[0][0], "new_password")
 
-    def test_short_password(self):
-        self.findAndFillForm()
-        self.password.clear()
-        self.password_confirmation.clear()
-        self.password.send_keys("passw")
-        self.password_confirmation.send_keys("passw")
-        self.assertTrue("error" in self.password.get_attribute("class"))
-
     def test_different_password_confirmation(self):
         self.findAndFillForm()
         self.password_confirmation.clear()
         self.password_confirmation.send_keys("password:D")
+        self.submitForm()
         self.assertTrue("error" in self.password_confirmation.get_attribute("class"))
 
