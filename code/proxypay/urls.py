@@ -39,7 +39,13 @@ urlpatterns = [
             'path': 'send-email.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
     path('change_password/', static.serve, kwargs={
-            'path': 'change-    password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+            'path': 'change-password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('register_link/', static.serve, kwargs={
+            'path': 'register-with-link.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('add_member/', static.serve, kwargs={
+            'path': 'add-member.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('profile/1/', static.serve, kwargs={
+            'path': 'profile.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
     path('wallet/', static.serve, kwargs={
             'path': 'wallet.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
@@ -83,4 +89,7 @@ urlpatterns = [
 
     path('withdraw/', static.serve, kwargs={
         'path': 'withdraw-request.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
+    path('company_wallet/', static.serve, kwargs={
+        'path': 'company-wallet.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 ]

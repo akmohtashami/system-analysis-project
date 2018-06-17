@@ -9,9 +9,9 @@ class WalletTest(BaseTest):
 
     def findForm(self):
         self.name = self.driver.find_element_by_id('name')
-        self.balance_IRR = self.driver.find_element_by_id('balance_IRR')
-        self.balance_USD = self.driver.find_element_by_id('balance_USD')
-        self.balance_EUR = self.driver.find_element_by_id('balance_EUR')
+        self.rial_balance = self.driver.find_element_by_id('rial_balance')
+        self.dollar_balance = self.driver.find_element_by_id('dollar_balance')
+        self.euro_balance = self.driver.find_element_by_id('euro_balance')
 
     def test_form_inputs(self):
         self.findForm()
