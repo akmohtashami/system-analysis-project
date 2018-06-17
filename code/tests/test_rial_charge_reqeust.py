@@ -6,7 +6,6 @@ from tests.base import BaseTest
 from tests.email_validate import EmailValidate
 
 
-
 class RialChargeRequestTest(BaseTest,
                             EmailValidate("email"),
                             AmountValidate("amount")):
@@ -51,7 +50,7 @@ class RialChargeRequestTest(BaseTest,
         self.submitForm()
         self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
 
-    def test_confirm(self):
+    def find_confirm_page(self):
         self.findAndFillForm()
         self.submitForm()
         self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
@@ -60,9 +59,15 @@ class RialChargeRequestTest(BaseTest,
         self.charge_amount = self.form.find_element_by_id('charge_amount')
         self.due_amount = self.form.find_element_by_id('due_amount')
         self.submit_button = self.form.find_element_by_name("submit")
+        self.back_button = self.form.find_element_by_name("back")
 
-        self.charge_amount = int(self.charge_amount)
-        self.due_amount = int(self.due_amount)
+        self.charge_amount = int(self.charge_amount.text)
+        self.due_amount = int(self.due_amount.text)
+
+    def test_confirm(self):
+        self.find_confirm_page()
+
+        current_irr_balance = int(self.driver.find_element_by_id("balance_IRR").text)
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -75,8 +80,27 @@ class RialChargeRequestTest(BaseTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
+        new_irr_balance = int(self.driver.find_element_by_id("balance_IRR").text)
+        self.assertTrue(new_irr_balance == current_irr_balance + self.charge_amount)
 
-        self.assertTrue("shaparak" in self.driver.current_url, "Must be redirected to shaparak")
+    def test_cancel(self):
+        self.find_confirm_page()
+
+        current_irr_balance = int(self.driver.find_element_by_id("balance_IRR").text)
+
+        # Not using self.form.submit deliberately
+        self.back_button.click()
+
+        def form_has_gone_stale(driver):
+            try:
+                self.form.find_element_by_name('name')
+                return False
+            except StaleElementReferenceException:
+                return True
+
+        self.wait_for(form_has_gone_stale)
+        new_irr_balance = int(self.driver.find_element_by_id("balance_IRR").text)
+        self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_logged_in_default_email(self):
         email = "test@test.ir"
