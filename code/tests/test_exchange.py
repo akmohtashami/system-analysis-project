@@ -49,7 +49,7 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.findAndFillForm()
         self.output_amount.send_keys('1000000')
         self.submitForm()
-        self.assertTrue(self.balance_IRR == 100000 and self.balance_USD == 100000)
+        self.assertTrue(int(self.balance_IRR.text) == 100000 and int(self.balance_USD.text) == 100000)
 
     def test_submit_exchange(self):
         self.findAndFillForm()
@@ -66,4 +66,4 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.submitForm()
         self.balance_IRR = self.driver.find_element_by_id('balance_IRR')
         self.balance_USD = self.driver.find_element_by_id('balance_USD')
-        self.assertTrue(self.balance_IRR == 100000 - pay_amount and self.balance_USD == 100000 + receive_amount)
+        self.assertTrue(int(self.balance_IRR.text) == 100000 - pay_amount and int(self.balance_USD.text) == 100000 + receive_amount)
