@@ -38,6 +38,7 @@ class BaseTest(unittest.TestCase):
             self.createAgent(*agent)
         for manager in self.MANAGER_INFO:
             self.createManager(*manager)
+        self.last_url = None
 
     def loginAsCustomer(self, id=0):
         self.login(self.CUSTOMER_INFO[id][0], self.CUSTOMER_INFO[id][1])
@@ -49,6 +50,7 @@ class BaseTest(unittest.TestCase):
         self.login(self.MANAGER_INFO[id][0], self.MANAGER_INFO[id][1])
 
     def getURL(self, rel_path):
+        self.last_url = rel_path
         self.driver.get(self.URL_PREFIX + rel_path)
 
     def wait_for(self, func, timeout=10):
