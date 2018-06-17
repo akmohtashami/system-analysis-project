@@ -30,6 +30,9 @@ urlpatterns = [
     re_path('', include('static_pages.urls', namespace='pages')),
     path('admin/', admin.site.urls),
 
+    path('edit_index/', static.serve, kwargs={
+            'path': 'edit-index.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+
     path('contact/', static.serve, kwargs={
             'path': 'contact.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('send-email/', static.serve, kwargs={
