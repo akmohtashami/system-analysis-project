@@ -36,7 +36,7 @@ urlpatterns = [
             'path': 'send-email.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
     path('change_password/', static.serve, kwargs={
-            'path': 'change_password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+            'path': 'change-password.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
     path('wallet/', static.serve, kwargs={
             'path': 'wallet.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
