@@ -55,7 +55,7 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
         self.total_due = self.driver.find_element_by_id('due_amount')
         self.form = self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.submit_button = self.form.find_element_by_name("submit")
-        self.due_amount = int(self.due_amount)
+        self.total_due = int(self.total_due)
 
         # Not using self.form.submit deliberately
         self.submit_button.click()

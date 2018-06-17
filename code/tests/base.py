@@ -1,15 +1,8 @@
 import os
 import unittest
 
-from django.core.management import call_command
-from django.core.management.commands import flush
-from django.test import LiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
-
-from users.models import User, UserType
-from wallet.models import Currency
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -90,25 +83,3 @@ class BaseTest(unittest.TestCase):
         self.driver.close()
 
 
-class BaseDjangoTest(BaseTest, LiveServerTestCase):
-    def getURL(self, rel_path):
-        self.driver.get(self.live_server_url + rel_path)
-
-    def createCustomer(self, email, password, rial, dollar, euro):
-        user = User.objects.create(name=email, email=email)
-        user.set_password(password)
-        user.save()
-        user.wallets.filter(currency=Currency.IRR).update(credit=rial)
-        user.wallets.filter(currency=Currency.USD).update(credit=dollar)
-        user.wallets.filter(currency=Currency.EUR).update(credit=euro)
-
-    def createAgent(self, email, password, rial):
-        user = User.objects.create(name=email, email=email, type=UserType.Employee)
-        user.set_password(password)
-        user.save()
-        user.wallets.filter(currency=Currency.IRR).update(credit=rial)
-
-    def createManager(self, email, password):
-        user = User.objects.create(name=email, email=email, type=UserType.Admin)
-        user.set_password(password)
-        user.save()
