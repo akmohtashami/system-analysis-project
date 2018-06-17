@@ -4,7 +4,7 @@ from selenium.common.exceptions import StaleElementReferenceException
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
 from tests.email_validate import EmailValidate
-from tests.utils import createCustomer
+
 
 
 class RialChargeRequestTest(BaseTest,
@@ -80,7 +80,7 @@ class RialChargeRequestTest(BaseTest,
 
     def test_logged_in_default_email(self):
         email = "test@test.ir"
-        createCustomer(email, "pass1", 0, 0, 0)
+        self.createCustomer(email, "pass1", 0, 0, 0)
         self.login(email, "pass1")
         self.findForm()
         self.assertEqual(self.email.text, email,

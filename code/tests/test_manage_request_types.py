@@ -4,7 +4,6 @@ from selenium.webdriver.support.select import Select
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
 from tests.email_validate import EmailValidate
-from tests.utils import createCustomer
 
 
 class ManageRequestTypeTest(BaseTest):

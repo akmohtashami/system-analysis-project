@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    {% trans 'Login' as login_button %}
+    {% include 'form.html' with form=form form_name='login_form' submit_button_text=login_button %}
+    <p><a href="{% url 'users:register' %}">{% trans 'Not a member yet? register here.' %}</a></p>
+{% endblock %}

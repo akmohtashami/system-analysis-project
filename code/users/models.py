@@ -1,12 +1,24 @@
-from django.contrib.auth.base_user import AbstractBaseUser
+from enum import Enum
+
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
+from proxypay.fields import EnumField
+
+
+class UserType(Enum):
+    Customer = 0
+    Employee = 1
+    Admin = 1
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
+    objects = BaseUserManager()
 
     email = models.EmailField(
         verbose_name=_("email"),
@@ -33,21 +45,25 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    type = EnumField(UserType, verbose_name=_("type"), default=UserType.Customer)
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    class Meta:
-        permissions = (('admin_access', _("Admin")),
-                       ('employee_access', _("Employee")),
-                       ('customer_access', _("Customer")))
-
     def is_admin(self):
-        return self.has_perm('admin_access')
+        return self.type == UserType.Admin
 
     def is_employee(self):
-        return self.has_perm('employee_access')
+        return self.type == UserType.Employee
 
     def is_customer(self):
-        return self.has_perm('customer_access')
+        return self.type == UserType.Customer
+
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
