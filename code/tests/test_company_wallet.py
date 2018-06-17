@@ -1,35 +1,24 @@
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.ui import Select
-
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
 
 
-class ExchangeTest(BaseTest, AmountValidate("output_amount")):
+class CompanyWalletTest(BaseTest, AmountValidate("charge_amount")):
     def setUp(self):
-        super(ExchangeTest, self).setUp()
-        self.loginAsCustomer()
-        self.getURL('exchange')
+        super(CompanyWalletTest, self).setUp()
+        self.loginAsManager()
+        self.getURL('company_wallet')
 
-    def findConfirmationForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[name='exchange_confirm_form']")
-        self.input_currency = self.driver.find_element_by_id('input_currency')
-        self.input_amount = self.driver.find_element_by_id('input_amount')
-        self.output_currency = self.driver.find_element_by_id('output_currency')
-        self.output_amount = self.driver.find_element_by_id('output_amount')
-        self.submit_button = self.driver.find_element_by_name('submit')
-
-    def findForm(self, form_name="exchange_form"):
-        self.form = self.driver.find_element_by_css_selector("form[name='exchange_form']")
-        self.input_currency = Select(self.driver.find_element_by_id('input_currency'))
-        self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
-        self.output_amount = self.driver.find_element_by_id('output_amount')
+    def findForm(self):
+        self.rial_balance = self.driver.find_element_by_id('rial_balance')
+        self.dollar_balance = self.driver.find_element_by_id('dollar_balance')
+        self.euro_balance = self.driver.find_element_by_id('euro_balance')
+        self.form = self.driver.find_element_by_css_selector("form[name='charge_form']")
+        self.charge_amount = self.form.find_element_by_id('charge_amount')
         self.submit_button = self.driver.find_element_by_name('submit')
 
     def fillForm(self):
-        self.input_currency.select_by_value('IRR')
-        self.output_currency.select_by_value('USD')
-        self.output_amount.send_keys('1')
+        self.charge_amount.send_keys('1000')
 
     def findAndFillForm(self):
         self.findForm()
@@ -47,31 +36,14 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
                 return True
 
         self.wait_for(form_has_gone_stale)
+        self.findForm()
 
     def test_form_inputs(self):
-        self.findAndFillForm()
+        self.findForm()
 
-    def test_big_exchange(self):
+    def test_ok_charge(self):
         self.findAndFillForm()
-        self.output_amount.send_keys('1000000')
-        self.submitForm()
-        self.assertTrue(self.checkHasClass(self.output_amount, 'error'))
-
-    def test_submit_exchange(self):
-        self.findAndFillForm()
-        self.submitForm()
-        self.findConfirmationForm()
-
-    def test_confirm_exchange(self):
-        self.findAndFillForm()
-        receive_amount = float(self.output_amount.text)
-        self.submitForm()
-        self.findConfirmationForm()
-        self.assertTrue(float(self.output_amount.text) == receive_amount)
-        pay_amount = float(self.input_amount.text)
+        current_balance = float(self.rial_balance.text)
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.rial_balance = self.driver.find_element_by_id('rial_balance')
-        self.dollar_balance = self.driver.find_element_by_id('dollar_balance')
-        self.assertTrue(float(self.rial_balance.text) == 100000 - pay_amount and
-                        float(self.dollar_balance.text) == 100000 + receive_amount)
+        self.assertTrue(float(self.rial_balance.text) == current_balance + 1000)
