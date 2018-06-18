@@ -75,10 +75,10 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         pay_amount = float(self.input_amount.text)
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        rial_balance = self.driver.find_element_by_id('rial_balance')
-        dollar_balance = self.driver.find_element_by_id('dollar_balance')
-        self.assertTrue(float(rial_balance.text) == 100000 - pay_amount and
-                        float(dollar_balance.text) == 100000 + receive_amount)
+        balance_IRR = self.driver.find_element_by_id('balance_IRR')
+        balance_USD = self.driver.find_element_by_id('balance_USD')
+        self.assertTrue(float(balance_IRR.text) == 100000 - pay_amount and
+                        float(balance_USD.text) == 100000 + receive_amount)
 
     def test_cancel_confirm_exchange(self):
         current_balance = float(self.driver.find_element_by_id('balance_IRR').text)

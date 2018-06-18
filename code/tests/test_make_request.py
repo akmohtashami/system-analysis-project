@@ -3,7 +3,6 @@ from selenium.webdriver.common.keys import Keys
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
-from tests.email_validate import EmailValidate
 
 
 class MakeRequestTest(BaseTest, AmountValidate("amount")):
