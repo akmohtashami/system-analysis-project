@@ -11,7 +11,7 @@ class ManageStaticPagesTest(BaseTest):
     def setUp(self):
         super(ManageStaticPagesTest, self).setUp()
         self.loginAsManager()
-        self.getURL("static-pages")
+        self.getURL("pages")
 
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
