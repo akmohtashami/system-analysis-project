@@ -9,7 +9,7 @@ class ManageRequestTypeTest(BaseTest):
     def setUp(self):
         super(ManageRequestTypeTest, self).setUp()
         self.loginAsManager()
-        self.getURL("request-types")
+        self.getURL("requests")
 
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
