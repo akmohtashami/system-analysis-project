@@ -98,7 +98,7 @@ class ManageStaticPagesTest(BaseTest):
         self.fillForm()
         self.submitForm()
         self.getURL("page/static_page")
-        self.driver.find_element_by_id("description")
+        self.assertTrue("Some description" in self.driver.find_element_by_id("description").get_attribute("innerHTML"))
 
     def test_visibilty_false(self):
         self.findAddForm()
