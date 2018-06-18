@@ -49,11 +49,13 @@ class ProfileTest(BaseTest, EmailValidate('email')):
     def test_form_inputs(self):
         self.findForm()
 
-    def test_ok_register(self):
+    def test_update_profile(self):
         self.findForm()
         self.fillForm()
         self.submitForm(refill=False)
         self.driver.find_element_by_class_name("success")
+        self.getURL('profile/1')
+        self.assertTrue(self.name.text == 'testX' and self.email.text == 'testX@gmail.com')
 
     def test_empty_name(self):
         self.findForm()

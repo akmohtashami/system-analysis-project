@@ -1,9 +1,7 @@
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.select import Select
 
-from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
-from tests.email_validate import EmailValidate
 
 
 class ManageRequestTypeTest(BaseTest):
@@ -176,10 +174,3 @@ class ManageRequestTypeTest(BaseTest):
         self.name.clear()
         self.submitForm()
         self.findForm()
-
-
-
-
-
-
-

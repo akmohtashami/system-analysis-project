@@ -18,8 +18,9 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.output_currency = self.driver.find_element_by_id('output_currency')
         self.output_amount = self.driver.find_element_by_id('output_amount')
         self.submit_button = self.driver.find_element_by_name('submit')
+        self.cancel_button = self.driver.find_element_by_name('cancel')
 
-    def findForm(self, form_name="exchange_form"):
+    def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='exchange_form']")
         self.input_currency = Select(self.driver.find_element_by_id('input_currency'))
         self.output_currency = Select(self.driver.find_element_by_id('output_currency'))
@@ -35,9 +36,12 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         self.findForm()
         self.fillForm()
 
-    def submitForm(self):
+    def submitForm(self, cancel=False):
         # Not using self.form.submit deliberately
-        self.submit_button.click()
+        if cancel:
+            self.cancel_button.click()
+        else:
+            self.submit_button.click()
 
         def form_has_gone_stale(driver):
             try:
@@ -51,7 +55,7 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
     def test_form_inputs(self):
         self.findAndFillForm()
 
-    def test_big_exchange(self):
+    def test_exchange_more_than_balance(self):
         self.findAndFillForm()
         self.output_amount.send_keys('1000000')
         self.submitForm()
@@ -71,7 +75,16 @@ class ExchangeTest(BaseTest, AmountValidate("output_amount")):
         pay_amount = float(self.input_amount.text)
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.rial_balance = self.driver.find_element_by_id('rial_balance')
-        self.dollar_balance = self.driver.find_element_by_id('dollar_balance')
-        self.assertTrue(float(self.rial_balance.text) == 100000 - pay_amount and
-                        float(self.dollar_balance.text) == 100000 + receive_amount)
+        rial_balance = self.driver.find_element_by_id('rial_balance')
+        dollar_balance = self.driver.find_element_by_id('dollar_balance')
+        self.assertTrue(float(rial_balance.text) == 100000 - pay_amount and
+                        float(dollar_balance.text) == 100000 + receive_amount)
+
+    def test_cancel_confirm_exchange(self):
+        current_balance = float(self.driver.find_element_by_id('balance_IRR').text)
+        self.findAndFillForm()
+        self.submitForm()
+        self.findConfirmationForm()
+        self.submitForm(cancel=True)
+        self.driver.find_element_by_class_name("success")
+        self.assertTrue(float(self.driver.find_element_by_id('balance_IRR').text) == current_balance)
