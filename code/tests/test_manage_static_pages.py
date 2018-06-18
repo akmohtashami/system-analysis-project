@@ -84,7 +84,9 @@ class ManageStaticPagesTest(BaseTest):
         self.findAddForm()
         self.fillForm()
         self.submitForm()
-        self.test_list()
+        self.driver.find_element_by_class_name("success")
+        self.getURL("pages")
+        self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
@@ -120,7 +122,9 @@ class ManageStaticPagesTest(BaseTest):
         self.name.clear()
         self.name.send_keys("EDITED")
         self.submitForm()
-        self.test_list()
+        self.driver.find_element_by_class_name("success")
+        self.getURL("pages")
+        self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
