@@ -48,14 +48,19 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
         self.submitForm()
         self.driver.find_element_by_css_selector("form[name='confirm_form']")
 
-    def test_confirm(self):
+    def findConfirmPage(self):
         self.findAndFillForm()
         self.submitForm()
         self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.total_due = self.driver.find_element_by_id('due_amount')
         self.form = self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.submit_button = self.form.find_element_by_name("submit")
+        self.back_button = self.form.find_element_by_name("back_button")
         self.total_due = int(self.total_due.text)
+
+    def test_confirm(self):
+        self.findConfirmPage()
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -69,7 +74,27 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
 
         self.wait_for(form_has_gone_stale)
 
-        self.assertTrue("history" in self.driver.current_url, "Must be redirected to history")
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        self.assertTrue(new_irr_balance == current_irr_balance - self.total_due)
+
+    def test_cancel(self):
+        self.findConfirmPage()
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+
+        # Not using self.form.submit deliberately
+        self.back_button.click()
+
+        def form_has_gone_stale(driver):
+            try:
+                self.form.find_element_by_name('submit')
+                return False
+            except StaleElementReferenceException:
+                return True
+
+        self.wait_for(form_has_gone_stale)
+
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_text_multi_line(self):
         self.findAndFillForm()
