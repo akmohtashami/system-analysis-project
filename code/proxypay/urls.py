@@ -44,7 +44,9 @@ urlpatterns = [
             'path': 'register-with-link.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
     path('add_member/', static.serve, kwargs={
             'path': 'add-member.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
-    path('profile/1/', static.serve, kwargs={
+    path('users/', static.serve, kwargs={
+            'path': 'users-list.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
+    path('user/1/', static.serve, kwargs={
             'path': 'profile.html', 'document_root': os.path.join(settings.BASE_DIR, 'htmls')}),
 
     path('wallet/', static.serve, kwargs={
