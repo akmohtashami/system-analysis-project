@@ -88,7 +88,8 @@ class ManageRequestTypeTest(BaseTest):
         self.findAddForm()
         self.fillForm()
         self.submitForm()
-        self.test_list()
+        self.getURL("requests")
+        self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
@@ -125,7 +126,8 @@ class ManageRequestTypeTest(BaseTest):
         self.name.clear()
         self.name.send_keys("EDITED")
         self.submitForm()
-        self.test_list()
+        self.getURL("requests")
+        self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
         for td in first_row:
