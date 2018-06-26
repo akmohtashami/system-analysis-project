@@ -6,4 +6,8 @@ from solo.models import SingletonModel
 
 
 class Config(SingletonModel):
-    index_content = models.TextField(verbose_name=_("index content"))
+    index_content = models.TextField(verbose_name=_("index content"), default="")
+    exchange_fee = models.IntegerField(
+        verbose_name=_("exchange fee"),
+        default=0
+    )

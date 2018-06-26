@@ -17,35 +17,35 @@
         </div>
     <div class="ui centered grid">
         <div class="six wide column">
-        <table class="ui table">
-            <tbody>
-                <tr>
-                    <td class="two wide">{% trans 'Receiver' %}</td>
-                    <td id="receiver" class="four wide">{{ receiver }} </td>
-                </tr>
-                <tr>
-                    <td>{% trans 'Amount' %}</td>
-                    <td id="charge_amount">{{ charge_amount }} </td>
-                </tr>
-                <tr>
-                    <td class="collapsing">{% trans 'Total due' %}</td>
-                    <td id="total_due" >{{ due_amount }} </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="2">
-                        <button type="submit" class="ui button positive" name="confirm_button">
-                            {% trans 'Confirm' %}
-                        </button>
-                        <button type="submit" class="ui button negative" name="back_button">
-                            {% trans 'Back' %}
-                        </button>
-                    </th>
-                </tr>
-            </tfoot>
-        </table>
-            </div>
-            </div>
+            <table class="ui table">
+                <tbody>
+                    <tr>
+                        <td class="two wide">{% trans 'Receiver' %}</td>
+                        <td id="receiver" class="four wide">{{ receiver }} </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Amount' %}</td>
+                        <td id="charge_amount">{{ charge_amount }} </td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing">{% trans 'Total due' %}</td>
+                        <td id="total_due" >{{ due_amount }} </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">
+                            <button type="submit" class="ui button positive" name="confirm_button">
+                                {% trans 'Confirm' %}
+                            </button>
+                            <button type="submit" class="ui button negative" name="back_button">
+                                {% trans 'Back' %}
+                            </button>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
     </form>
 {% endblock %}

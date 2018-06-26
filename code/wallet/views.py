@@ -6,12 +6,14 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views import View
 
+from base.models import Config
 from base.views import LoginRequiredView
 from users.models import User
 from wallet.forms import RialChargeForm
 from wallet.models import Currency
+from wallet.utils import get_exchange_rates
 
-__all__ = ["MyWalletsView", "RialChargeView"]
+__all__ = ["MyWalletsView", "RialChargeView", "ExchangeRateView"]
 
 
 class MyWalletsView(LoginRequiredView):
@@ -60,4 +62,13 @@ class RialChargeView(View):
                 })
         return render(request, "wallet/rial_charge.html", context={
             "form": form
+        })
+
+
+class ExchangeRateView(View):
+    def get(self, request):
+        exchange_rates = get_exchange_rates()
+        return render(request, "wallet/exchange_rate.html", context={
+            "exchange_rates": exchange_rates,
+            "fee": Config.get_solo().exchange_fee
         })

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <div class="ui centered grid">
+        <div class="twelve wide column">
+            <table class="ui table striped celled">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Sell' %} / {% trans 'Buy' %}</th>
+                        {% for currency in exchange_rates.keys %}
+                            <th> {{ currency.title }} </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for currency, rates in exchange_rates.items %}
+                    <tr>
+                        <td>{{ currency.title }}</td>
+                        {% for other, rate in rates.items %}
+                            <td id="{{currency.name}}_to_{{other.name}}">
+                                {% if rate %} {{ rate | floatformat:2}} {% else %} - {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="{{exchange_rates.keys|length|add:"1"}}">
+                            {% trans 'Exchange fee' %}: {{ fee }}%
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}
