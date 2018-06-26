@@ -2,13 +2,11 @@ from django.contrib import messages
 from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.translation import ugettext as _
-
-# Create your views here.
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.views import View
 
-from proxypay.views import LoginRequiredView
+from base.views import LoginRequiredView
 from users.models import User
 from wallet.forms import RialChargeForm
 from wallet.models import Currency

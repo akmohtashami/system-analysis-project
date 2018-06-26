@@ -13,12 +13,36 @@ from proxypay.fields import EnumField
 class UserType(Enum):
     Customer = 0
     Employee = 1
-    Admin = 1
+    Admin = 2
+
+
+class UserManager(BaseUserManager):
+    def _create_user(self, email, password, **extra_fields):
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    objects = BaseUserManager()
+    objects = UserManager()
 
     email = models.EmailField(
         verbose_name=_("email"),
@@ -51,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def is_admin(self):
-        return self.type == UserType.Admin
+        return self.type == UserType.Admin or self.is_superuser
 
     def is_employee(self):
         return self.type == UserType.Employee

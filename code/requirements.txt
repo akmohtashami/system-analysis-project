@@ -2,3 +2,5 @@ selenium==3.11.0
 Django>=2.0,<2.1
 django-semanticui-forms
 django-selenium-login
+django-solo
+markdown
