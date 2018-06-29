@@ -1,10 +1,12 @@
-from tests.base import BaseTest
+from django.urls import reverse
+
+from tests.base_django import BaseDjangoTest
 
 
-class ExchangeRateTest(BaseTest):
+class ExchangeRateTest(BaseDjangoTest):
     def setUp(self):
         super(ExchangeRateTest, self).setUp()
-        self.getURL('exchange_rate')
+        self.getURL(reverse('wallet:rates'))
 
     def findForm(self):
         self.driver.find_element_by_id('IRR_to_USD')
