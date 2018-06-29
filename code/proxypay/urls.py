@@ -16,14 +16,12 @@ Including another URLconf
 import os
 
 from django.conf import settings
-from django.contrib.staticfiles.views import static
 from django.contrib import admin
+from django.contrib.staticfiles.views import static
 from django.urls import path, re_path, include
 
-from proxypay.views import IndexView
-
 urlpatterns = [
-    re_path('^$', IndexView.as_view(), name='index'),
+    re_path('', include('base.urls')),
     re_path('', include('users.urls', namespace='users')),
     re_path('', include('wallet.urls', namespace='wallets')),
     re_path('^services/', include('services.urls', namespace='services')),
