@@ -10,6 +10,9 @@ class RegisterForm(forms.ModelForm, RepeatPasswordForm):
     class Meta:
         model = User
         fields = ['name', 'email', ]
+        #widgets = {
+        #    'email': forms.EmailField(attrs={'readonly': 'readonly'}),
+        #}
         field_classes = []
 
     def save(self, commit=True):

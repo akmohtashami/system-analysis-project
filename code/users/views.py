@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 
 from users.forms import RegisterForm, LoginForm
 
-__all__ = ["RegisterView", "LoginView", "LogoutView"]
+__all__ = ["RegisterView", "RegisterWithLinkView", "LoginView", "LogoutView"]
 
 
 class NotAuthenticatedView(View):
@@ -39,6 +39,13 @@ class RegisterView(NotAuthenticatedView):
             form.save()
             messages.success(request, _("You have been successfully registered."))
             return HttpResponseRedirect(reverse("users:login"))
+        return self.render_form(request, form)
+
+
+class RegisterWithLinkView(RegisterView):
+    def get(self, request):
+        form = RegisterForm(initial={'email': 'peyman.jabarzade@gmail.com'})
+        form.fields['email'].__setattr__('disabled', True)
         return self.render_form(request, form)
 
 

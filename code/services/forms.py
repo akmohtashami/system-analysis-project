@@ -1,9 +1,9 @@
-from django.forms import ModelForm
+from django import forms
 
 from services.models import ServiceType
 
 
-class AddServiceTypeForm(ModelForm):
+class AddServiceTypeForm(forms.ModelForm):
     class Meta:
         model = ServiceType
         fields = ['short_name', 'name', 'currency', 'fee', 'is_active']
