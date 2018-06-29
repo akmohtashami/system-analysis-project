@@ -32,3 +32,14 @@ class LoginForm(AuthenticationForm):
 
 class ChangePasswordForm(SetPasswordForm):
     pass
+
+
+class SendEmailToUsersForm(forms.Form):
+    subject = forms.CharField(
+        label=_("subject"),
+        max_length=255,
+    )
+    text = forms.CharField(
+        label=_("text"),
+        widget=forms.Textarea,
+    )

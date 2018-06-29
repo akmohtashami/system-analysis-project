@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'services',
     'wallet',
+    'static_pages',
     'base',
 
     # Vendors
@@ -138,3 +139,9 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = "users:login"
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'admin@proxypay.ir'
+EMAIL_HOST_PASSWORD = 'admin'

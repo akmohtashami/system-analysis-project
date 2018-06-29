@@ -1,0 +1,6 @@
+{% load i18n %}
+
+{% blocktrans with name=name email=email %}
+New message received from {{ name }} ({{ email }}):
+{% endblocktrans %}
+{{ text }}

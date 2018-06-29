@@ -9,4 +9,5 @@ urlpatterns = [
     re_path(r'^login/$', LoginView.as_view(), name="login"),
     re_path(r'^logout/$', LogoutView.as_view(), name="logout"),
     re_path(r'^change_password/$', ChangePasswordView.as_view(), name="change_password"),
+    re_path(r'^inform/$', SendEmailToUsersView.as_view(), name="send_email_to_users"),
 ]
