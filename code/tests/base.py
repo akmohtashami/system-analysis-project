@@ -75,7 +75,7 @@ class BaseTest(unittest.TestCase):
         pass
 
     def checkHasClass(self, elem, class_name):
-        while elem != self.driver:
+        while elem != self.driver.find_element_by_tag_name("html"):
             if class_name in elem.get_attribute("class"):
                 return True
             elem = elem.find_element_by_xpath("..")
