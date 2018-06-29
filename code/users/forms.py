@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.utils.translation import ugettext as _
 
 from users.models import User
@@ -10,9 +10,6 @@ class RegisterForm(forms.ModelForm, RepeatPasswordForm):
     class Meta:
         model = User
         fields = ['name', 'email', ]
-        #widgets = {
-        #    'email': forms.EmailField(attrs={'readonly': 'readonly'}),
-        #}
         field_classes = []
 
     def save(self, commit=True):
@@ -31,3 +28,7 @@ class LoginForm(AuthenticationForm):
         ),
         'inactive': _("This account is inactive."),
     }
+
+
+class ChangePasswordForm(SetPasswordForm):
+    pass

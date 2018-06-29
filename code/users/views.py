@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,9 +8,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.utils.translation import ugettext as _
 
-from users.forms import RegisterForm, LoginForm
+from users.forms import RegisterForm, LoginForm, ChangePasswordForm
 
-__all__ = ["RegisterView", "RegisterWithLinkView", "LoginView", "LogoutView"]
+__all__ = ["RegisterView", "RegisterWithLinkView", "LoginView", "LogoutView", "ChangePasswordView"]
 
 
 class NotAuthenticatedView(View):
@@ -75,3 +75,23 @@ class LogoutView(View):
         logout(request)
         messages.success(request, _("You have been logged out successfully."))
         return HttpResponseRedirect(reverse("index"))
+
+
+class ChangePasswordView(View):
+    def render_form(self, request, form):
+        return render(request, 'users/change-password.html', context={
+            "form": form
+        })
+
+    def get(self, request):
+        form = ChangePasswordForm(request.user)
+        return self.render_form(request, form)
+
+    def post(self, request):
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Your password was successfully updated!'))
+            next = request.GET.get("next", request.POST.get("next", reverse("index")))
+            return HttpResponseRedirect(next)
+        return self.render_form(request, form)
