@@ -38,7 +38,7 @@ class BaseDjangoTest(BaseTest, LiveServerTestCase):
         assert(user.check_password(password), "Password should be correct")
         SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
         if self.last_url is None:
-            self.getURL('page_404')
+            self.getURL('/page_404')
         session = SessionStore()
         session[SESSION_KEY] = User.objects.get(email=username).id
         session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]

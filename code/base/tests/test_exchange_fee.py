@@ -1,19 +1,21 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
+from tests.base_django import BaseDjangoTest
 
 
-class ExchangeFeeTest(BaseTest, AmountValidate("exchange_fee")):
+class ExchangeFeeTest(BaseDjangoTest, AmountValidate("exchange_fee")):
     def setUp(self):
         super(ExchangeFeeTest, self).setUp()
         self.loginAsManager()
-        self.getURL('change_exchange_fee')
+        self.getURL(reverse('edit_exchange_fee'))
 
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='exchange_fee_form']")
-        self.exchange_fee = self.driver.find_element_by_id('exchange_fee')
-        self.submit_button = self.driver.find_element_by_name('submit')
+        self.exchange_fee = self.form.find_element_by_name('exchange_fee')
+        self.submit_button = self.form.find_element_by_name('submit')
 
     def fillForm(self):
         self.exchange_fee.clear()
@@ -47,6 +49,6 @@ class ExchangeFeeTest(BaseTest, AmountValidate("exchange_fee")):
     def test_change_exchange_fee(self):
         self.findAndFillForm()
         self.submitForm()
-        self.getURL('change_exchange_fee')
+        self.getURL(reverse('edit_exchange_fee'))
         self.findForm()
-        self.assertTrue(int(self.exchange_fee.text) == 10)
+        self.assertTrue(int(self.exchange_fee.get_attribute('value')) == 10)

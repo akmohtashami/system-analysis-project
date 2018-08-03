@@ -6,6 +6,8 @@ from django.views import View
 
 from services.forms import AddServiceTypeForm
 
+__all__ = ["AddServiceTypeView"]
+
 
 class AddServiceTypeView(View):
 
@@ -21,7 +23,7 @@ class AddServiceTypeView(View):
     def post(self, request):
         form = AddServiceTypeForm(request.POST)
         if form.is_valid():
-            messages.success(request, _("New service type has been successfully added."))
             form.save()
-            return HttpResponseRedirect(reverse("index"))
+            messages.success(request, _("New service type has been successfully added."))
+            return HttpResponseRedirect(reverse("services:add_new_type"))
         return self.render_form(request, form)
