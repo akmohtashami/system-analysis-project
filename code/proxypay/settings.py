@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'services',
     'wallet',
+    'static_pages',
     'base',
 
     # Vendors
@@ -139,6 +140,7 @@ STATICFILES_DIRS = [
 
 LOGIN_URL = "users:login"
 
+
 SUI_DROPDOWN_WRAPPER = (
     "<select class=\"ui%(style)s dropdown\" name=\"%(name)s\"%(attrs)s>"
         "%(choices)s"
@@ -147,3 +149,10 @@ SUI_DROPDOWN_WRAPPER = (
 SUI_CHOICE_TEMPLATE = (
     "<option value=\"{}\">{}</option>"
 )
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'admin@proxypay.ir'
+EMAIL_HOST_PASSWORD = 'admin'
+
