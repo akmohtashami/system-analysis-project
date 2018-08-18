@@ -4,3 +4,5 @@ django-semanticui-forms
 django-selenium-login
 django-solo
 markdown
+requests
+django-enumfields
