@@ -18,6 +18,9 @@ class Currency(Enum):
         self.title = title
         self.icon = icon
 
+    def __str__(self):
+        return str(self.title)
+
 
 class Wallet(models.Model):
     owner = models.ForeignKey(

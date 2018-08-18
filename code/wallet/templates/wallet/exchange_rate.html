@@ -3,6 +3,34 @@
 {% load i18n %}
 
 {% block content %}
+    {% load semanticui %}
+<h1>{%  trans 'Simulator' %}</h1>
+<form action='' name="simulate_exchange_form" method="post" class="ui form {{ form.errors | yesno:'error,' }}" novalidate>
+    {% if form.non_field_errors %}
+    <div class="ui error message">
+        {% for non_field_error in form.non_field_errors %}
+             <p>{{ non_field_error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <div class="fields">
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="ui tiny button primary" name="calc_inp">{% trans 'Calculate input currency' %}</button>
+        </div>
+        {% render_field form.input_amount _field_class="two wide" %}
+        {% render_field form.input_currency _field_class="three wide"%}
+        {% render_field form.output_currency _field_class="three wide" %}
+        {% render_field form.output_amount _field_class="two wide"%}
+        <div class="three wide field">
+            <label>&nbsp;</label>
+            <button type="submit" class="ui tiny button primary" name="calc_out">{% trans 'Calculate output currency' %}</button>
+        </div>
+    </div>
+</form>
+    <p>* {% trans 'Results are rounded to two decimal digits' %}</p>
+<h1>{%  trans 'Rates' %}</h1>
     <div class="ui centered grid">
         <div class="twelve wide column">
             <table class="ui table striped celled">

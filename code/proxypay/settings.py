@@ -138,3 +138,12 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = "users:login"
+
+SUI_DROPDOWN_WRAPPER = (
+    "<select class=\"ui%(style)s dropdown\" name=\"%(name)s\"%(attrs)s>"
+        "%(choices)s"
+    "</select>"
+)
+SUI_CHOICE_TEMPLATE = (
+    "<option value=\"{}\">{}</option>"
+)

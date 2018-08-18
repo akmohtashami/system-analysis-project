@@ -9,7 +9,7 @@ from django.views import View
 from base.models import Config
 from base.views import LoginRequiredView
 from users.models import User
-from wallet.forms import RialChargeForm
+from wallet.forms import RialChargeForm, ExchangeSimulationForm
 from wallet.models import Currency
 from wallet.utils import get_exchange_rates
 
@@ -66,9 +66,24 @@ class RialChargeView(View):
 
 
 class ExchangeRateView(View):
-    def get(self, request):
+    def render_with_form(self, request, form):
         exchange_rates = get_exchange_rates()
         return render(request, "wallet/exchange_rate.html", context={
             "exchange_rates": exchange_rates,
-            "fee": Config.get_solo().exchange_fee
+            "fee": Config.get_solo().exchange_fee,
+            "form": form
         })
+
+    def get(self, request):
+        simulation_form = ExchangeSimulationForm()
+        return self.render_with_form(request, simulation_form)
+
+    def post(self, request):
+        calculate_first_currency = "calc_inp" in request.POST
+        simulation_form = ExchangeSimulationForm(request.POST, calculate_first_currency=calculate_first_currency)
+        if simulation_form.is_valid():
+            simulation_form = ExchangeSimulationForm(initial=simulation_form.cleaned_data)
+        return self.render_with_form(request, simulation_form)
+
+
+
