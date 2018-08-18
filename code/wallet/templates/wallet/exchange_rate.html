@@ -20,7 +20,7 @@
                         <td>{{ currency.title }}</td>
                         {% for other, rate in rates.items %}
                             <td id="{{currency.name}}_to_{{other.name}}">
-                                {% if rate %} {{ rate | floatformat:2}} {% else %} - {% endif %}
+                                {% if rate %} {{ rate | floatformat:-5}} {% else %} - {% endif %}
                             </td>
                         {% endfor %}
                     </tr>
