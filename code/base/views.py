@@ -12,11 +12,11 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from base.forms import EditIndexForm
+from base.forms import EditIndexForm, EditExchangeFeeForm
 from base.models import Config
 
 __all__ = ["IndexView", "LoginRequiredView", "EmployeeRequiredView", "AdminRequiredView",
-           "StaffRequiredView", "CustomerRequiredView", "EditIndexView"]
+           "StaffRequiredView", "CustomerRequiredView", "EditIndexView", "EditExchangeFeeView"]
 
 
 class LoginRequiredView(View):
@@ -87,4 +87,25 @@ class EditIndexView(AdminRequiredView):
             form.save()
             messages.success(request, _("Home page updated successfully"))
             return HttpResponseRedirect(reverse("edit_index"))
+        return self.render_form(request, form)
+
+
+class EditExchangeFeeView(AdminRequiredView):
+    def render_form(self, request, form):
+        return render(request, "edit_exchange_fee.html", context={
+            "form": form
+        })
+
+    def get(self, request):
+        config = Config.get_solo()
+        form = EditExchangeFeeForm(instance=config)
+        return self.render_form(request, form)
+
+    def post(self, request):
+        config = Config.get_solo()
+        form = EditExchangeFeeForm(request.POST, instance=config)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Exchange fee updated successfully"))
+            return HttpResponseRedirect(reverse("edit_exchange_fee"))
         return self.render_form(request, form)
