@@ -1,21 +1,32 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
 
+from services.models import ServiceType
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
+from tests.base_django import BaseDjangoTest
+from wallet.models import Currency
 
 
-class MakeRequestTest(BaseTest, AmountValidate("amount")):
+class MakeRequestTest(BaseDjangoTest, AmountValidate("amount")):
 
     def setUp(self):
         super(MakeRequestTest, self).setUp()
         self.loginAsCustomer()
-        self.getURL("request/toefl/")
+        ServiceType.objects.create(
+            short_name="toefl",
+            name="TOEFL",
+            currency=Currency.IRR,
+        )
+        self.getURL(reverse("services:service_description", kwargs={
+            "service_name": "toefl"
+        }))
 
     def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[id='request_fill_form']")
+        self.form = self.driver.find_element_by_css_selector("form[name='request_fill_form']")
         self.amount = self.form.find_element_by_name('amount')
-        self.text = self.form.find_element_by_name('text')
+        self.text = self.form.find_element_by_name('description')
         self.submit_button = self.form.find_element_by_name("submit")
 
     def fillForm(self):
@@ -53,7 +64,7 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
         self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.total_due = self.driver.find_element_by_id('due_amount')
         self.form = self.driver.find_element_by_css_selector("form[name='confirm_form']")
-        self.submit_button = self.form.find_element_by_name("submit")
+        self.submit_button = self.form.find_element_by_name("confirm_button")
         self.back_button = self.form.find_element_by_name("back_button")
         self.total_due = int(self.total_due.text)
 
@@ -66,7 +77,7 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
 
         def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('submit')
+                self.form.find_element_by_name('confirm_button')
                 return False
             except StaleElementReferenceException:
                 return True
@@ -85,7 +96,7 @@ class MakeRequestTest(BaseTest, AmountValidate("amount")):
 
         def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('submit')
+                self.form.find_element_by_name('back_button')
                 return False
             except StaleElementReferenceException:
                 return True

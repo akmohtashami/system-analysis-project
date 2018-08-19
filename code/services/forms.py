@@ -1,16 +1,18 @@
 from django import forms
 
-from services.models import ServiceType
+from services.models import ServiceType, ServiceRequest
 
 
 class AddServiceTypeForm(forms.ModelForm):
     class Meta:
         model = ServiceType
-        fields = ['short_name', 'name', 'currency', 'fee', 'is_active']
-        #widgets = {
-        #    'currency':
-        #}
+        fields = '__all__'
 
-    def save(self, commit=True):
-        service_type = super(AddServiceTypeForm, self).save(commit)
-        return service_type
+
+class MakeRequestForm(forms.ModelForm):
+    class Meta:
+        model = ServiceRequest
+        fields = ['amount', 'description']
+        widgets = {
+            'amount': forms.TextInput()
+        }

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ service.name }}</h1>
+    {{ service.description_html | safe}}
+    {% if form %}
+        <hr />
+        {% trans 'Submit' as submit_button %}
+        {% include 'form.html' with form=form form_name='request_fill_form' submit_button_text=submit_button %}
+    {% endif %}
+{% endblock %}
