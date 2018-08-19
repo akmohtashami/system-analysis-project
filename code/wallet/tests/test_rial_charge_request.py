@@ -59,7 +59,7 @@ class RialChargeRequestTest(BaseDjangoTest,
         self.submit_button = self.form.find_element_by_name("confirm_button")
         self.back_button = self.form.find_element_by_name("back_button")
 
-        self.charge_amount = int(self.charge_amount.text)
+        self.charge_amount = float(self.charge_amount.text)
         self.due_amount = float(self.due_amount.text)
 
     def find_confirm_page(self):
