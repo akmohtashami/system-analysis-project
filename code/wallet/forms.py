@@ -57,3 +57,39 @@ class ExchangeSimulationForm(forms.Form):
             final_output = real_input * exchange_rate
             data["output_amount"] = round(final_output, 2)
         return data
+
+
+class ExchangeForm(forms.Form):
+    input_currency = Wallet._meta.get_field("currency").formfield(label=_("Input currency"))
+    output_currency = Wallet._meta.get_field("currency").formfield(label=_("Output currency"))
+    output_amount = forms.FloatField(label=_("Output amount"), widget=forms.TextInput(), min_value=0)
+
+    def clean(self):
+        data = super(ExchangeForm, self).clean()
+        if "input_currency" not in data or "output_currency" not in data:
+            return data
+        rates = get_exchange_rates()
+        exchange_rate = rates[data["input_currency"]][data["output_currency"]]
+        if exchange_rate is None:
+            raise forms.ValidationError(_("This conversion is not possible"))
+        return data
+
+
+class ExchangeConfirmationForm(forms.Form):
+    input_currency = Wallet._meta.get_field("currency").formfield(label=_("Input currency"))
+    output_currency = Wallet._meta.get_field("currency").formfield(label=_("Output currency"))
+    output_amount = forms.FloatField(label=_("Output amount"), widget=forms.TextInput(), min_value=0)
+    input_amount = forms.FloatField(label=_("Input amount"), widget=forms.TextInput(), min_value=0)
+
+    def clean(self):
+        data = super(ExchangeConfirmationForm, self).clean()
+        if "input_currency" not in data or "output_currency" not in data:
+            return data
+        rates = get_exchange_rates()
+        exchange_rate = rates[data["input_currency"]][data["output_currency"]]
+        if exchange_rate is None:
+            raise forms.ValidationError(_("This conversion is not possible"))
+        return data
+
+
+

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    {% trans 'Exchange' as change_button %}
+    {% include 'form.html' with form=form form_name='exchange_form' submit_button_text=change_button %}
+{% endblock %}

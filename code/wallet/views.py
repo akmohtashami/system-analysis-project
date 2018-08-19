@@ -1,4 +1,6 @@
+import math
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -9,12 +11,14 @@ from django.views import View
 from base.models import Config
 from base.views import LoginRequiredView, AdminRequiredView
 from users.models import User
-from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm
+from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm, ExchangeForm, \
+    ExchangeConfirmationForm
 from wallet.models import Currency, Wallet
-from wallet.utils import get_exchange_rates
+from wallet.utils import get_exchange_rates, get_input_from_output_amount
 
 __all__ = ["MyWalletsView", "CompanyWalletsView",
-           "UserRialChargeView", "ExchangeRateView"]
+           "UserRialChargeView", "ExchangeRateView",
+           "CompanyExchangeView", "UserExchangeView"]
 
 
 class MyWalletsView(LoginRequiredView):
@@ -63,8 +67,124 @@ class UserRialChargeView(View):
                 })
 
         return render(request, "wallet/rial_charge.html", context={
+
             "form": form
         })
+
+
+class ExchangeBaseView(View):
+    def get(self, request):
+        form = ExchangeForm()
+        return render(request, "wallet/exchange.html", context={
+            "form": form
+        })
+
+    def post(self, request):
+        ERROR = 3
+        if "confirm_button" in request.POST:
+            form = ExchangeConfirmationForm(request.POST)
+            if not form.is_valid():
+                return render(request, "wallet/exchange_confirm.html", context={
+                    "form": form,
+                    "error": ERROR - 1,
+                    "float_format": -ERROR,
+                })
+                messages.error(request, _("Confirmation failed. Please try again"))
+                return HttpResponseRedirect(self.get_failure_redirect_url())
+            input_currency = form.cleaned_data["input_currency"]
+            output_currency = form.cleaned_data["output_currency"]
+            output_amount = form.cleaned_data["output_amount"]
+            input_amount = get_input_from_output_amount(
+                input_currency,
+                output_currency,
+                output_amount
+            )
+            if abs(input_amount - form.cleaned_data["input_amount"]) > (10**(-ERROR)):
+                messages.error(request, _("Due to fluctuations in exchange rates "
+                                          "we were unable to process your request. "
+                                          "Please try again."))
+                return HttpResponseRedirect(self.get_failure_redirect_url())
+
+            with transaction.atomic():
+                updated = self.get_wallets(request).filter(
+                    currency=input_currency,
+                    credit__gte=input_amount
+                ).update(
+                    credit=F('credit') - input_amount
+                )
+                if updated == 0:
+                    transaction.set_rollback(True)
+                    messages.error(request, _("Insufficient funds"))
+                    return HttpResponseRedirect(self.get_failure_redirect_url())
+                updated = self.get_wallets(request).filter(
+                    currency=output_currency
+                ).update(
+                    credit=F('credit') + output_amount
+                )
+                if updated == 0:
+                    transaction.set_rollback(True)
+                    messages.error(request, _("Unable to transfer funds"))
+                    return HttpResponseRedirect(self.get_failure_redirect_url())
+            messages.success(request, _("Exchange completed successfully"))
+            return HttpResponseRedirect(self.get_success_redirect_url())
+        else:
+            form = ExchangeForm(request.POST)
+            if "back_button" not in request.POST and form.is_valid():
+                input_currency = form.cleaned_data["input_currency"]
+                output_currency = form.cleaned_data["output_currency"]
+                output_amount = form.cleaned_data["output_amount"]
+                input_amount = get_input_from_output_amount(
+                    input_currency,
+                    output_currency,
+                    output_amount
+                )
+                exchange_data = {
+                    "input_currency": input_currency,
+                    "output_currency": output_currency,
+                    "output_amount": output_amount,
+                    "input_amount": input_amount
+                }
+                confirmation_form = ExchangeConfirmationForm(initial=exchange_data)
+                return render(request, "wallet/exchange_confirm.html", context={
+                    "form": confirmation_form,
+                    "error": ERROR - 1,
+                    "float_format": -ERROR,
+                    **exchange_data
+                })
+            return render(request, "wallet/exchange.html", context={
+                "form": form
+            })
+
+    def get_wallets(self, request):
+        raise NotImplementedError
+
+    def get_failure_redirect_url(self):
+        raise NotImplementedError
+
+    def get_success_redirect_url(self):
+        raise NotImplementedError
+
+
+class UserExchangeView(LoginRequiredView, ExchangeBaseView):
+    def get_wallets(self, request):
+        return request.user.wallets.all()
+
+    def get_failure_redirect_url(self):
+        return reverse("wallet:exchange")
+
+    def get_success_redirect_url(self):
+        return reverse("wallet:wallets")
+
+
+class CompanyExchangeView(AdminRequiredView, ExchangeBaseView):
+    def get_wallets(self, request):
+        return Wallet.get_company_wallets()
+
+    def get_failure_redirect_url(self):
+        return reverse("wallet:company_exchange")
+
+    def get_success_redirect_url(self):
+        return reverse("wallet:company_wallets")
 
 
 class CompanyWalletsView(AdminRequiredView):

@@ -13,3 +13,4 @@ class EditExchangeFeeForm(forms.ModelForm):
     class Meta:
         model = Config
         fields = ["exchange_fee"]
+

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <form action='' name="exchange_confirm_form" method="post" class="ui form {{ form.errors | yesno:'error,' }}" novalidate>
+        {% if form.non_field_errors %}
+            <div class="ui error message">
+                {% for non_field_error in form.non_field_errors %}
+                     <p>{{ non_field_error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="ui hidden content">
+            {% csrf_token %}
+            {{ form }}
+        </div>
+    <div class="ui centered grid">
+        <div class="six wide column">
+            <table class="ui table">
+                <tbody>
+                    <tr>
+                        <td class="two wide">{% trans 'Input' %}</td>
+                        <td class="four wide">
+                            <span id="input_amount_txt">{{ input_amount|floatformat:float_format }}</span>
+                            <span id="input_currency_txt">{{ input_currency }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Output' %}</td>
+                        <td>
+                            <span id="output_amount_txt">{{ output_amount|floatformat:float_format }}</span>
+                            <span id="output_currency_txt">{{ output_currency }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">
+                            <button type="submit" class="ui button positive" name="confirm_button">
+                                {% trans 'Confirm' %}
+                            </button>
+                            <button type="submit" class="ui button negative" name="back_button">
+                                {% trans 'Back' %}
+                            </button>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+            <p>* {% blocktrans with error=error %}Due to fluctuations in exchange rates the values may not be accurate after {{ error }} decimal digits.{% endblocktrans %}</p>
+        </div>
+    </div>
+    </form>
+{% endblock %}

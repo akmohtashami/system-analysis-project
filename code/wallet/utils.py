@@ -34,6 +34,7 @@ def get_exchange_rates():
             response[sell_cur][buy_cur] = (1.0 / float(api_result[key]['p'])) if inverse else float(api_result[key]['p'])
     return response
 
+
 def get_input_from_output_amount(input_currency, output_currency, output_amount):
     rates = get_exchange_rates()
     required_input = output_amount / rates[input_currency][output_currency]
