@@ -38,4 +38,4 @@ def get_exchange_rates():
 def get_input_from_output_amount(input_currency, output_currency, output_amount):
     rates = get_exchange_rates()
     required_input = output_amount / rates[input_currency][output_currency]
-    return required_input / (1 - (Config.get_solo().exchange_fee / 100.0))
+    return required_input * (1 + (Config.get_solo().exchange_fee / 100.0))
