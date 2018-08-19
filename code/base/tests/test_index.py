@@ -1,20 +1,22 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
+from tests.base_django import BaseDjangoTest
 
 
-class EditIndexTest(BaseTest):
+class EditIndexTest(BaseDjangoTest):
     def setUp(self):
         super(EditIndexTest, self).setUp()
         self.loginAsManager()
-        self.getURL('edit_index')
+        self.getURL(reverse('edit_index'))
 
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='edit_index_form']")
-        self.index_content = self.driver.find_element_by_id('index_content')
+        self.index_content = self.driver.find_element_by_name('index_content')
         self.submit_button = self.driver.find_element_by_name('submit')
 
     def fillForm(self):
@@ -45,16 +47,16 @@ class EditIndexTest(BaseTest):
         self.findAndFillForm()
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("")
+        self.getURL(reverse("index"))
         self.assertTrue("Hello1" in self.driver.page_source)
 
-        self.getURL("edit_index")
+        self.getURL(reverse("edit_index"))
         self.findAndFillForm()
         self.index_content.clear()
         self.index_content.send_keys('Hello2')
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("")
+        self.getURL(reverse("index"))
         self.assertTrue("Hello2" in self.driver.page_source)
 
     def test_text_multi_line(self):
