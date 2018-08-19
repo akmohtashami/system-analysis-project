@@ -7,7 +7,7 @@
         {% for wallet in wallets %}
             <div class="five wide column center aligned">
                 <i class="currency-flag currency-flag-lg currency-flag-{{wallet.currency.icon}}"></i>
-                <p>{{ wallet.credit|floatformat:"2" }} {{ wallet.currency.title }}</p>
+                <p><span id="wallet_{{ wallet.currency.name }}_balance">{{ wallet.credit|floatformat:"2" }}</span> {{ wallet.currency.title }}</p>
             </div>
         {% endfor %}
     </div>
