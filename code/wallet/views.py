@@ -80,20 +80,9 @@ class CompanyWalletsView(AdminRequiredView):
         form = CompanyRialChargeForm(request.POST)
         if form.is_valid():
             charge_amount = form.cleaned_data["amount"]
-            fee = 0  # TODO: Calculate fee
-            due_amount = charge_amount * (1 + fee)
-            if "confirm_button" in request.POST:
-                Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
-                messages.success(request, _("Transaction completed successfully"))
-                return HttpResponseRedirect(reverse("wallet:company_wallets"))
-            elif "back_button" not in request.POST:
-                return render(request, "wallet/rial_charge_confirm.html", context={
-                    "form": form,
-                    "receiver": _("Company"),
-                    "charge_amount": charge_amount,
-                    "due_amount": due_amount
-                })
-
+            Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
+            messages.success(request, _("Transaction completed successfully"))
+            return HttpResponseRedirect(reverse("wallet:company_wallets"))
         company_wallets = Wallet.get_company_wallets()
         return render(request, "wallet/company_wallets.html", context={
             "form": form,
