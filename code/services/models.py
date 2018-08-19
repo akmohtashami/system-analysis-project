@@ -1,4 +1,4 @@
-from django.core.validators import URLValidator
+from django.core.validators import URLValidator, RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -11,7 +11,7 @@ class ServiceType(models.Model):
         verbose_name=_("short name"),
         unique=True,
         max_length=255,
-        validators=[URLValidator()]
+        validators=[RegexValidator("^[a-zA-Z0-9\_\-]+$")]
     )
     name = models.CharField(
         verbose_name=_("name"),
@@ -21,7 +21,7 @@ class ServiceType(models.Model):
         Currency,
         verbose_name=_("currency")
     )
-    fee = models.IntegerField(
+    fee = models.PositiveIntegerField(
         verbose_name=_("transaction fee"),
         default=0
     )
