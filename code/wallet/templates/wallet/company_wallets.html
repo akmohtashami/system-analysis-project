@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans 'Wallets information' %}</h1>
+    <div class="ui centered relaxed grid">
+        {% for wallet in wallets %}
+            <div class="five wide column center aligned">
+                <i class="currency-flag currency-flag-lg currency-flag-{{wallet.currency.icon}}"></i>
+                <p>{{ wallet.credit|floatformat:"2" }} {{ wallet.currency.title }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <h1>{% trans 'Rial charge' %}</h1>
+    {% trans 'Charge' as charge_button %}
+    {% include 'form.html' with form=form form_name='charge_form' submit_button_text=charge_button %}
+{% endblock %}

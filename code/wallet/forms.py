@@ -8,7 +8,11 @@ from wallet.utils import get_exchange_rates, get_input_from_output_amount
 
 class RialChargeForm(forms.Form):
     email = forms.EmailField(label=_("Receiver"), required=True)
-    amount = forms.IntegerField(label=_("Amount"), min_value=1, required=True)
+    amount = forms.FloatField(label=_("Amount"), min_value=0, widget=forms.TextInput(), required=True)
+
+
+class CompanyRialChargeForm(forms.Form):
+    amount = forms.FloatField(label=_("Amount"), min_value=0, widget=forms.TextInput(), required=True)
 
 
 class ExchangeSimulationForm(forms.Form):

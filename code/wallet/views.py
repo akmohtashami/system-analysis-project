@@ -7,13 +7,14 @@ from django.utils.translation import ugettext as _
 from django.views import View
 
 from base.models import Config
-from base.views import LoginRequiredView
+from base.views import LoginRequiredView, AdminRequiredView
 from users.models import User
-from wallet.forms import RialChargeForm, ExchangeSimulationForm
-from wallet.models import Currency
+from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm
+from wallet.models import Currency, Wallet
 from wallet.utils import get_exchange_rates
 
-__all__ = ["MyWalletsView", "RialChargeView", "ExchangeRateView"]
+__all__ = ["MyWalletsView", "CompanyWalletsView",
+           "UserRialChargeView", "ExchangeRateView"]
 
 
 class MyWalletsView(LoginRequiredView):
@@ -23,7 +24,7 @@ class MyWalletsView(LoginRequiredView):
         })
 
 
-class RialChargeView(View):
+class UserRialChargeView(View):
     def get(self, request):
         if request.user.is_authenticated:
             initial_data = {
@@ -40,13 +41,13 @@ class RialChargeView(View):
         form = RialChargeForm(request.POST)
         if form.is_valid():
             charge_amount = form.cleaned_data["amount"]
-            fee = 0 # TODO: Calculate fee
-            due_amount = charge_amount * (1 + fee)
             receiver = form.cleaned_data["email"]
+            fee = 0  # TODO: Calculate fee
+            due_amount = charge_amount * (1 + fee)
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
                 user.wallets.filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
-                # TODO: Add fee to company account
+                Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + fee)
                 user.notify_charge(charge_amount)
                 messages.success(request, _("Transaction completed successfully"))
                 if user == request.user:
@@ -60,8 +61,43 @@ class RialChargeView(View):
                     "charge_amount": charge_amount,
                     "due_amount": due_amount
                 })
+
         return render(request, "wallet/rial_charge.html", context={
             "form": form
+        })
+
+
+class CompanyWalletsView(AdminRequiredView):
+    def get(self, request):
+        form = CompanyRialChargeForm()
+        company_wallets = Wallet.get_company_wallets()
+        return render(request, "wallet/company_wallets.html", context={
+            "form": form,
+            "wallets": company_wallets
+        })
+
+    def post(self, request):
+        form = CompanyRialChargeForm(request.POST)
+        if form.is_valid():
+            charge_amount = form.cleaned_data["amount"]
+            fee = 0  # TODO: Calculate fee
+            due_amount = charge_amount * (1 + fee)
+            if "confirm_button" in request.POST:
+                Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
+                messages.success(request, _("Transaction completed successfully"))
+                return HttpResponseRedirect(reverse("wallet:company_wallets"))
+            elif "back_button" not in request.POST:
+                return render(request, "wallet/rial_charge_confirm.html", context={
+                    "form": form,
+                    "receiver": _("Company"),
+                    "charge_amount": charge_amount,
+                    "due_amount": due_amount
+                })
+
+        company_wallets = Wallet.get_company_wallets()
+        return render(request, "wallet/company_wallets.html", context={
+            "form": form,
+            "wallets": company_wallets
         })
 
 

@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from proxypay.fields import EnumField
+from users.models import User, UserType
 
 
 class Currency(Enum):
@@ -38,12 +39,28 @@ class Wallet(models.Model):
     class Meta:
         unique_together = (('currency', 'owner'), )
 
+    @classmethod
+    def get_company_wallets(cls):
+        user, created = User.objects.get_or_create(id=0, defaults={
+            "email": "company@localhost",
+            "type": UserType.System,
+            "is_active": False
+        })
+        if created:
+            user.set_unusable_password()
+            user.save()
+            # for currency in Currency:
+            #    cls.objects.get_or_create(owner=user, currency=currency)
+        return user.wallets.all()
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL, dispatch_uid="create_wallets_for_new_users")
 def create_wallets(sender, instance, created, *args, **kwargs):
     if created:
         for currency in Currency:
-            if instance.is_customer() or currency == Currency.IRR:
+            if instance.is_customer() or \
+                            instance.type == UserType.System or \
+                            currency == Currency.IRR:
                 Wallet.objects.create(
                     owner=instance,
                     currency=currency,

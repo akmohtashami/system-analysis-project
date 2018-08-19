@@ -14,6 +14,7 @@ class UserType(Enum):
     Customer = 0
     Employee = 1
     Admin = 2
+    System = 3
 
 
 class UserManager(BaseUserManager):
