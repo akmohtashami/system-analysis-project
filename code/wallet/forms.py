@@ -53,7 +53,7 @@ class ExchangeSimulationForm(forms.Form):
                 return data
             if data.get("input_amount", None) is None:
                 data["input_amount"] = 0
-            real_input = data["input_amount"] / (1 + (Config.get_solo().exchange_fee / 100.0))
+            real_input = data["input_amount"] * (1 - (Config.get_solo().exchange_fee / 100.0))
             final_output = real_input * exchange_rate
             data["output_amount"] = round(final_output, 2)
         return data
