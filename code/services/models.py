@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator, RegexValidator, MinValueValidator
 from django.db import models
-from django.db.models.signals import class_prepared
+from django.db.models.signals import class_prepared, post_migrate
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -87,9 +87,10 @@ class ServiceRequest(models.Model):
     creation_date = models.DateField(auto_now_add=True, verbose_name=_("creation date"))
 
 
-@receiver(class_prepared, sender=ServiceType)
+@receiver(post_migrate)
 def create_withdraw_request(sender, **kwargs):
-    sender.objects.get_or_create(
+    from wallet.models import Currency
+    ServiceType.objects.get_or_create(
         short_name='withdraw',
         defaults={
             "name": _("Withdraw"),

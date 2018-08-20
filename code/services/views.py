@@ -8,12 +8,12 @@ from django.views import View
 from django.utils.translation import ugettext as _
 
 from base.views import LoginRequiredView
-from services.forms import AddServiceTypeForm, MakeRequestForm
+from services.forms import AddServiceTypeForm, MakeRequestForm, WithdrawRequestForm
 from services.models import ServiceType, ServiceRequest
 from wallet.models import Wallet
 
 __all__ = ["AddServiceTypeView", "ServiceTypeDescriptionView",
-           "RequestsHistoryView"]
+           "RequestsHistoryView", "WithdrawRequestView"]
 
 
 class AddServiceTypeView(View):
@@ -114,3 +114,13 @@ class RequestsHistoryView(LoginRequiredView):
         return render(request, "services/requests_history.html", context={
             "requests": request.user.requests.all().order_by("-creation_date", "-id")
         })
+
+
+class WithdrawRequestView(ServiceTypeDescriptionView):
+    form = WithdrawRequestForm
+
+    def get(self, request):
+        return super(WithdrawRequestView, self).get(request, service_name="withdraw")
+
+    def post(self, request):
+        return super(WithdrawRequestView, self).post(request, service_name="withdraw")

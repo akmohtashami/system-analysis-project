@@ -1,15 +1,17 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 
 
 from tests.amount_validate import AmountValidate
 from tests.base import BaseTest
+from tests.base_django import BaseDjangoTest
 from tests.email_validate import EmailValidate
 
 
 class WithdrawRequestTestBase(AmountValidate("amount")):
 
     def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[id='withdraw_form']")
+        self.form = self.driver.find_element_by_css_selector("form[name='request_fill_form']")
         self.amount = self.form.find_element_by_name('amount')
         self.sheba = self.form.find_element_by_name('sheba')
         self.submit_button = self.form.find_element_by_name("submit")
@@ -49,14 +51,14 @@ class WithdrawRequestTestBase(AmountValidate("amount")):
         self.sheba.send_keys('A')
         self.submitForm()
         self.findForm()
-        self.assertTrue("error" in self.sheba.get_attribute("class"))
+        self.assertTrue(self.checkHasClass(self.sheba, "error"))
 
     def test_empty_sheba(self):
         self.findAndFillForm()
         self.sheba.clear()
         self.submitForm()
         self.findForm()
-        self.assertTrue("error" in self.sheba.get_attribute("class"))
+        self.assertTrue(self.checkHasClass(self.sheba, "error"))
 
     def test_confirm(self):
         self.findAndFillForm()
@@ -64,7 +66,7 @@ class WithdrawRequestTestBase(AmountValidate("amount")):
         self.driver.find_element_by_css_selector("form[name='confirm_form']")
         self.total_due = self.driver.find_element_by_id('due_amount')
         self.form = self.driver.find_element_by_css_selector("form[name='confirm_form']")
-        self.submit_button = self.form.find_element_by_name("submit")
+        self.submit_button = self.form.find_element_by_name("confirm_button")
         self.total_due = int(self.total_due.text)
 
         # Not using self.form.submit deliberately
@@ -72,7 +74,7 @@ class WithdrawRequestTestBase(AmountValidate("amount")):
 
         def form_has_gone_stale(driver):
             try:
-                self.form.find_element_by_name('submit')
+                self.form.find_element_by_name('confirm_button')
                 return False
             except StaleElementReferenceException:
                 return True
@@ -82,15 +84,15 @@ class WithdrawRequestTestBase(AmountValidate("amount")):
         self.assertTrue("history" in self.driver.current_url, "Must be redirected to history")
 
 
-class WithdrawRequestTestForCustomer(BaseTest, WithdrawRequestTestBase):
+class WithdrawRequestTestForCustomer(BaseDjangoTest, WithdrawRequestTestBase):
     def setUp(self):
-        super(WithdrawRequestTestBase, self).setUp()
+        super(WithdrawRequestTestForCustomer, self).setUp()
         self.loginAsCustomer()
-        self.getURL("withdraw")
+        self.getURL(reverse("services:withdraw"))
 
 
-class WithdrawRequestTestForAgent(BaseTest, WithdrawRequestTestBase):
+class WithdrawRequestTestForAgent(BaseDjangoTest, WithdrawRequestTestBase):
     def setUp(self):
-        super(WithdrawRequestTestBase, self).setUp()
+        super(WithdrawRequestTestForAgent, self).setUp()
         self.loginAsAgnet()
-        self.getURL("withdraw")
+        self.getURL(reverse("services:withdraw"))
