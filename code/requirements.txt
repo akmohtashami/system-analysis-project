@@ -6,3 +6,4 @@ django-solo
 markdown
 requests
 django-enumfields
+django-heroku
