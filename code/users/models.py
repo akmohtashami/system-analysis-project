@@ -1,3 +1,4 @@
+import uuid
 from enum import Enum
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -15,6 +16,9 @@ class UserType(Enum):
     Employee = 1
     Admin = 2
     System = 3
+    @classmethod
+    def choices(cls):
+        return tuple((i.name, i.name) for i in cls if i.name != "System")
 
 
 class UserManager(BaseUserManager):
@@ -70,7 +74,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    link = models.CharField(max_length=100, editable=False, default=uuid.uuid4)
     type = EnumField(UserType, verbose_name=_("type"), default=UserType.Customer)
+
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -94,4 +100,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     @transaction.atomic
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-

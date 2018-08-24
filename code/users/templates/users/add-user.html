@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    {% trans 'Add' as register_button %}
+    {% include 'form.html' with form=form form_name='add_user_form' submit_button_text=register_button %}
+{% endblock %}

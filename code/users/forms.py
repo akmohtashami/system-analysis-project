@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.utils.translation import ugettext as _
 
-from users.models import User
+from users.models import User, UserType
 from utils.forms import RepeatPasswordForm
 
 
@@ -43,3 +43,35 @@ class SendEmailToUsersForm(forms.Form):
         label=_("text"),
         widget=forms.Textarea,
     )
+
+
+class AddUserForm(forms.ModelForm, RepeatPasswordForm):
+    type = forms.ChoiceField(choices=UserType.choices())
+    #   input_currency = User._meta.get_field("type").formfield(label=_("Type"), required=True, blank=False)
+
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'type']
+        field_classes = []
+
+    def save(self, commit=True):
+        user = super(AddUserForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'is_active']
+        widgets = {
+            'email': forms.TextInput(attrs={'disabled': True})
+        }
+        field_classes = []
+
+    def update(self, user, commit=True):
+        if commit:
+            user.save(force_update=True)
+        return user

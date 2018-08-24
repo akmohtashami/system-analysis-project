@@ -23,6 +23,8 @@
             {% if request.user.is_admin %}
                 <a class="item" href="{% url 'edit_index' %}">{% trans 'Edit homepage' %}</a>
                 <a class="item" href="{% url 'edit_exchange_fee' %}">{% trans 'Edit exchange fee' %}</a>
+                <a class="item" href="{% url 'services:add_new_type' %}">{% trans 'Add new service type' %}</a>
+                <a class="item" href="{% url 'users:users_list' %}">{% trans 'All users' %}</a>
             {% endif %}
             {% if request.user.is_authenticated %}
                 <a class="item" href="{% url 'wallet:wallets' %}"> {{ request.user.name }}</a>

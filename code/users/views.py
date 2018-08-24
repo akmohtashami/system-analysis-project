@@ -8,12 +8,13 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.utils.translation import ugettext as _
 
-from users.forms import RegisterForm, LoginForm, ChangePasswordForm, SendEmailToUsersForm
-from users.models import User
+from base.views import AdminRequiredView, LoginRequiredView
+from users.forms import RegisterForm, LoginForm, ChangePasswordForm, SendEmailToUsersForm, AddUserForm, ProfileForm
+from users.models import User, UserType
 from utils.mail import send_email
 
 __all__ = ["RegisterView", "RegisterWithLinkView", "LoginView", "LogoutView", "ChangePasswordView",
-           "SendEmailToUsersView"]
+           "SendEmailToUsersView", "AddUserView", "UsersListView", "ProfileView"]
 
 
 class NotAuthenticatedView(View):
@@ -72,7 +73,7 @@ class LoginView(NotAuthenticatedView):
         return self.render_form(request, form)
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredView):
     @method_decorator(login_required)
     def get(self, request):
         logout(request)
@@ -80,7 +81,7 @@ class LogoutView(View):
         return HttpResponseRedirect(reverse("index"))
 
 
-class ChangePasswordView(View):
+class ChangePasswordView(LoginRequiredView):
     def render_form(self, request, form):
         return render(request, 'users/change-password.html', context={
             "form": form
@@ -100,7 +101,7 @@ class ChangePasswordView(View):
         return self.render_form(request, form)
 
 
-class SendEmailToUsersView(View):
+class SendEmailToUsersView(AdminRequiredView):
     def render_form(self, request, form):
         return render(request, 'send-email.html', context={
             "form": form
@@ -122,3 +123,57 @@ class SendEmailToUsersView(View):
             next = request.GET.get("next", request.POST.get("next", reverse("index")))
             return HttpResponseRedirect(next)
         return self.render_form(request, form)
+
+
+class AddUserView(AdminRequiredView):
+    def render_form(self, request, form):
+        return render(request, 'users/add-user.html', context={
+            "form": form
+        })
+
+    def get(self, request):
+        form = AddUserForm()
+        return self.render_form(request, form)
+
+    def post(self, request):
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("User has been successfully added."))
+            return HttpResponseRedirect(reverse("users:add_user"))
+        return self.render_form(request, form)
+
+
+class UsersListView(AdminRequiredView):
+    def get(self, request):
+        return render(request, "users/users_list.html", context={
+            "users": User.objects.filter(type=UserType.Customer).order_by("-email").reverse()
+        })
+
+
+class ProfileView(AdminRequiredView):
+    def render_form(self, request, form, user):
+        return render(request, 'users/profile.html', context={
+            "form": form,
+            "user": user
+        })
+
+    def get(self, request, link):
+        user = User.objects.filter(link=link)[0]
+        form = ProfileForm(initial={
+            'name': user.name,
+            'email': user.email,
+            'is_active': user.is_active
+        })
+        return self.render_form(request, form, user)
+
+    def post(self, request, link):
+        user = User.objects.filter(link=link)[0]
+        data = request.POST.copy()
+        data['email'] = user.email
+        form = ProfileForm(data, instance=user)
+        if form.is_valid():
+            form.update(user)
+            messages.success(request, _("User has been updated."))
+            return HttpResponseRedirect(reverse("users:profile", args=(link,)))
+        return self.render_form(request, form, user)
