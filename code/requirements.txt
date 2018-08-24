@@ -7,3 +7,4 @@ markdown
 requests
 django-enumfields
 django-heroku
+gunicorn
