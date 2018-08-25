@@ -62,7 +62,6 @@
                             <a class="item" href="{% url 'edit_exchange_fee' %}">{% trans 'Edit exchange fee' %}</a>
                             <a class="item" href="{% url 'services:add_new_type' %}">{% trans 'Add new service type' %}</a>
                             <a class="item" href="{% url 'users:users_list' %}">{% trans 'All users' %}</a>
-                            <a class="item" href="{% url 'services:requests_list' %}">{% trans 'All requests' %}</a>
                         </div>
                     </div>
                      <div class="ui dropdown item" href="{% url 'wallet:wallets' %}">
@@ -73,6 +72,7 @@
                             <a class="ui three column grid item" href="{% url "wallet:company_wallets" %}">
                                 {% for wallet in company_wallets.all %}
                                     <div class="column center aligned">
+
                                         <i class="currency-flag currency-flag-{{wallet.currency.icon}}"></i><br/>
                                         <div style="word-wrap:break-word; white-space: normal" id="company_balance_{{wallet.currency.name}}">{{ wallet.credit|floatformat:"-2" }}</div>
                                     </div>
@@ -83,6 +83,9 @@
                             <a class="item" href="{% url 'wallet:company_exchange' %}"> {% trans 'Exchange' %}</a>
                         </div>
                     </div>
+                {% endif %}
+                {% if request.user.is_admin or request.user.is_employee %}
+                    <a class="item" href="{% url 'services:requests_list' %}">{% trans 'All requests' %}</a>
                 {% endif %}
                 {% if available_services %}
                     <div class="ui dropdown item" href="{% url 'wallet:wallets' %}">
