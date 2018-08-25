@@ -12,9 +12,11 @@ class AddServiceTypeForm(forms.ModelForm):
 
 
 class MakeRequestForm(forms.ModelForm):
+    currency = forms.CharField(required=False, disabled=True)
+
     class Meta:
         model = ServiceRequest
-        fields = ['amount', 'description']
+        fields = ['amount', 'currency', 'description']
         widgets = {
             'amount': forms.TextInput()
         }
@@ -53,3 +55,22 @@ class WithdrawRequestForm(forms.ModelForm):
         if commit:
             obj.save()
         return obj
+
+
+class RequestDetailsForm(forms.ModelForm):
+    user = forms.CharField(required=False, disabled=True)
+    amount = forms.CharField(required=False, disabled=True)
+    currency = forms.CharField(required=False, disabled=True)
+    description = forms.CharField(required=False, disabled=True)
+    operator = forms.CharField(required=False, disabled=True)
+    status = forms.CharField(required=False, disabled=True)
+
+    class Meta:
+        model = ServiceRequest
+        fields = ['user', 'amount', 'currency', 'description', 'operator', 'status']
+        field_classes = []
+
+    def update(self, request, commit=True):
+        if commit:
+            request.save(force_update=True)
+        return request

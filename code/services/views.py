@@ -7,13 +7,14 @@ from django.urls import reverse
 from django.views import View
 from django.utils.translation import ugettext as _
 
-from base.views import LoginRequiredView
-from services.forms import AddServiceTypeForm, MakeRequestForm, WithdrawRequestForm
-from services.models import ServiceType, ServiceRequest
+from base.views import LoginRequiredView, StaffRequiredView
+from services.forms import AddServiceTypeForm, MakeRequestForm, WithdrawRequestForm, RequestDetailsForm
+from services.models import ServiceType, ServiceRequest, RequestStatus
 from wallet.models import Wallet
 
 __all__ = ["AddServiceTypeView", "ServiceTypeDescriptionView",
-           "RequestsHistoryView", "WithdrawRequestView"]
+           "RequestsHistoryView", "WithdrawRequestView",
+           "RequestsListView", "RequestDetailsView"]
 
 
 class AddServiceTypeView(View):
@@ -44,7 +45,9 @@ class ServiceTypeDescriptionView(View):
         service = get_object_or_404(ServiceType,
                                     short_name=service_name,
                                     is_active=True)
-        form = self.form() \
+        form = self.form(initial={
+            'currency': service.currency
+        }) \
             if service.user_can_make_request(request.user) \
             else None
         return render(request, "services/service_description.html", context={
@@ -58,8 +61,7 @@ class ServiceTypeDescriptionView(View):
                                     is_active=True)
         if not service.user_can_make_request(request.user):
             return self.http_method_not_allowed(request)
-        req = ServiceRequest(service_type=service, owner=request.user,
-                             currency=service.currency)
+        req = ServiceRequest(service_type=service, owner=request.user)
         form = self.form(request.POST, instance=req)
         if form.is_valid():
             amount = form.cleaned_data["amount"]
@@ -124,3 +126,83 @@ class WithdrawRequestView(ServiceTypeDescriptionView):
 
     def post(self, request):
         return super(WithdrawRequestView, self).post(request, service_name="withdraw")
+
+
+class RequestsListView(StaffRequiredView):
+    def get(self, request):
+        return render(request, "services/requests_list.html", context={
+            "requests": ServiceRequest.objects.order_by("-id")
+        })
+
+
+class RequestDetailsView(StaffRequiredView):
+
+    form = RequestDetailsForm
+
+    def get(self, request, link):
+        service_request = get_object_or_404(ServiceRequest, link=link)
+        service = service_request.service_type
+        if service_request.operator is None:
+            operator = None
+        else:
+            operator = service_request.operator.name
+
+        form = self.form(initial={
+            'user': service_request.owner.name,
+            'amount': service_request.amount,
+            'currency': service.currency,
+            'description': service_request.description,
+            'operator': operator,
+            'status': service_request.status
+        })
+        return render(request, "services/request_details.html", context={
+            "service": service,
+            "is_pending": service_request.status == RequestStatus.PENDING and request.user.is_employee(),
+            "is_processing": service_request.status == RequestStatus.PROCESSING and
+                             service_request.operator == request.user and request.user.is_employee(),
+            "form": form
+        })
+
+    def post(self, request, link):
+        service_request = get_object_or_404(ServiceRequest,
+                                            link=link)
+        form = self.form(request.POST, instance=service_request)
+
+        if form.is_valid():
+            if "accept_button" in request.POST:
+                if service_request.status != RequestStatus.PENDING or not request.user.is_employee():
+                    messages.error(request, _("You can't accept this request."))
+                    return HttpResponseRedirect(reverse("services:details", kwargs={
+                        "link": service_request.link
+                        }))
+                service_request.status = RequestStatus.PROCESSING
+                service_request.operator = request.user
+                form.update(service_request)
+                return HttpResponseRedirect(reverse("services:details", kwargs={
+                    "link": service_request.link
+                    }))
+
+            elif "reject_button" in request.POST:
+                if service_request.status != RequestStatus.PROCESSING or service_request.operator != request.user:
+                    messages.error(request, _("You can't reject this request."))
+                    return HttpResponseRedirect(reverse("services:details", kwargs={
+                        "link": service_request.link
+                        }))
+                service_request.status = RequestStatus.PENDING
+                service_request.operator = None
+                form.update(service_request)
+                return HttpResponseRedirect(reverse("services:details", kwargs={
+                    "link": service_request.link
+                    }))
+
+            elif "finish_button" in request.POST:
+                if service_request.status != RequestStatus.PROCESSING or service_request.operator != request.user:
+                    messages.error(request, _("You can't finish this request."))
+                    return HttpResponseRedirect(reverse("services:details", kwargs={
+                        "link": service_request.link
+                        }))
+                service_request.status = RequestStatus.DONE
+                form.update(service_request)
+                return HttpResponseRedirect(reverse("services:details", kwargs={
+                    "link": service_request.link
+                    }))

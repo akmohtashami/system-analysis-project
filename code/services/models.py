@@ -1,3 +1,4 @@
+import uuid
 from enum import Enum
 
 import markdown
@@ -61,7 +62,8 @@ class ServiceType(models.Model):
 
 
 class RequestStatus(Enum):
-    PENDING = _("Pending"),
+    PENDING = _("Pending")
+    PROCESSING = _("Processing")
     DONE = _("Done")
     REJECTED = _("Rejected")
 
@@ -77,14 +79,13 @@ class ServiceRequest(models.Model):
                                      related_name='requests')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("owner"), on_delete=models.PROTECT,
                               related_name='requests')
+    operator = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("operator"), on_delete=models.PROTECT,
+                                 default=None, null=True)
     amount = models.FloatField(verbose_name=_("amount"), validators=[MinValueValidator(0)])
-    currency = EnumField(
-        Currency,
-        verbose_name=_("currency")
-    )
     description = models.TextField(verbose_name=_("description"), blank=True)
     status = EnumField(RequestStatus, verbose_name=_("status"), default=RequestStatus.PENDING)
     creation_date = models.DateField(auto_now_add=True, verbose_name=_("creation date"))
+    link = models.CharField(max_length=100, editable=False, default=uuid.uuid4)
 
 
 @receiver(post_migrate)

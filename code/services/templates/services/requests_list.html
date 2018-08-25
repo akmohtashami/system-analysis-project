@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+
+<div id="history">
+    {% if requests %}
+        <table class="ui table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'User' %}</th>
+                <th>{% trans 'Amount' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Operator' %}</th>
+                <th>{% trans 'Details' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for request in requests %}
+                <tr>
+                    <td>{{ forloop.revcounter }}</td>
+                    <td>{{ request.owner.name }}</td>
+                    <td>{{ request.service_type }}</td>
+                    <td>{{ request.amount }} {{ request.currency }}</td>
+                    <td>{{ request.status }}</td>
+                    <td>{{ request.creation_date }}</td>
+                    <td>{{ request.operator.name }}</td>
+                    <td><a href="{% url 'services:details' request.link %}">{% trans 'Details' %}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="ui center aligned basic segment">
+            <p>{% trans 'You have not submitted any requests yet' %}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
