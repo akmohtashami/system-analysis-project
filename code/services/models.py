@@ -43,6 +43,20 @@ class ServiceType(models.Model):
         verbose_name=_("description"),
         blank=True
     )
+    min_amount = models.FloatField(
+        verbose_name=_("min amount"),
+        null=True,
+        default=None,
+        validators=[MinValueValidator(0)],
+        blank=True
+    )
+    max_amount = models.FloatField(
+        verbose_name=_("max amount"),
+        null=True,
+        default=None,
+        validators=[MinValueValidator(0)],
+        blank=True
+    )
 
     def user_can_make_request(self, user):
         return (user.is_authenticated and
@@ -52,6 +66,9 @@ class ServiceType(models.Model):
         super(ServiceType, self).clean()
         if self.short_name == 'withdraw' and self.currency != Currency.IRR:
             raise ValidationError(_("Withdraw is only allowed from IRR account"))
+        if self.min_amount is not None and self.max_amount is not None and \
+            self.min_amount > self.max_amount:
+            raise ValidationError(_("Min amount must be less than or equal to max amount"))
 
     @property
     def description_html(self):
