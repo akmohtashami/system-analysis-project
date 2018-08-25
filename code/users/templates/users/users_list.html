@@ -4,6 +4,7 @@
 
 {% block content %}
 
+    <a href="{% url 'users:add_user' %}">{% trans 'Add User' %}</a>
 <div id="list">
     {% if users %}
         <table class="ui table">

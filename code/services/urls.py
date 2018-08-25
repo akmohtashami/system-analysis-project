@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from services.models import ServiceType
 from services.views import *
@@ -9,6 +9,8 @@ urlpatterns = [
     re_path(r'^history/$', RequestsHistoryView.as_view(), name="requests_history"),
     re_path(r'^withdraw/$'.format(ServiceType.SHORT_NAME_REGEX),
             WithdrawRequestView.as_view(), name="withdraw"),
+    re_path(r'^list/$', RequestsListView.as_view(), name="requests_list"),
+    path('<uuid:link>/', RequestDetailsView.as_view(), name="details"),
     re_path(r'^(?P<service_name>{})/$'.format(ServiceType.SHORT_NAME_REGEX),
             ServiceTypeDescriptionView.as_view(), name="service_description"),
 ]
