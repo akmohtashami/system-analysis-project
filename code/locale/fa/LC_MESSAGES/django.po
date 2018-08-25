@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -129,10 +128,9 @@ msgid "Accept"
 msgstr "پذیرفتن"
 
 #: services/templates/services/request_details.html:28
-#, fuzzy
 #| msgid "Rejected"
 msgid "Reject"
-msgstr "رد شده"
+msgstr "رد کردن"
 
 #: services/templates/services/requests_history.html:13
 #: services/templates/services/requests_list.html:13
@@ -300,10 +298,8 @@ msgid "Home"
 msgstr "خانه"
 
 #: templates/base.html:53
-#, fuzzy
-#| msgid "credit"
 msgid "Send credit"
-msgstr "اعتبار"
+msgstr "ارسال اعتبار"
 
 #: templates/base.html:55
 msgid "Exchange rates"
@@ -330,20 +326,16 @@ msgid "All users"
 msgstr "تمام کاربران"
 
 #: templates/base.html:65
-#, fuzzy
-#| msgid "All users"
 msgid "All requests"
-msgstr "تمام کاربران"
+msgstr "تمام درخواست‌ها"
 
 #: templates/base.html:69
 msgid "Company account"
 msgstr "حساب شرکت"
 
 #: templates/base.html:89
-#, fuzzy
-#| msgid "service type"
 msgid "Services"
-msgstr "نوع سرویس"
+msgstr "خدمات"
 
 #: templates/send-email.html:6
 msgid "Send"
