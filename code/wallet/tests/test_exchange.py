@@ -3,7 +3,7 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.ui import Select
 
 from tests.amount_validate import AmountValidate
-from tests.base import BaseTest
+from tests.base import BaseTest, SemanticSelect
 from tests.base_django import BaseDjangoTest
 
 
@@ -24,8 +24,8 @@ class ExchangeTest(BaseDjangoTest, AmountValidate("output_amount")):
 
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='exchange_form']")
-        self.input_currency = Select(self.driver.find_element_by_name('input_currency'))
-        self.output_currency = Select(self.driver.find_element_by_name('output_currency'))
+        self.input_currency = SemanticSelect(self.driver.find_element_by_name('input_currency'))
+        self.output_currency = SemanticSelect(self.driver.find_element_by_name('output_currency'))
         self.output_amount = self.driver.find_element_by_name('output_amount')
         self.submit_button = self.driver.find_element_by_name('submit')
 
@@ -81,15 +81,15 @@ class ExchangeTest(BaseDjangoTest, AmountValidate("output_amount")):
         self.driver.find_element_by_class_name("success")
         balance_IRR = self.driver.find_element_by_id('balance_IRR')
         balance_USD = self.driver.find_element_by_id('balance_USD')
-        self.assertTrue(float(balance_USD.text) == round(100000 - pay_amount, 2) and
-                        float(balance_IRR.text) == round(100000 + receive_amount, 2))
+        self.assertTrue(float(balance_USD.get_attribute("innerHTML")) == round(100000 - pay_amount, 2) and
+                        float(balance_IRR.get_attribute("innerHTML")) == round(100000 + receive_amount, 2))
 
     def test_cancel_confirm_exchange(self):
-        current_USD_balance = float(self.driver.find_element_by_id('balance_USD').text)
-        current_IRR_balance = float(self.driver.find_element_by_id('balance_IRR').text)
+        current_USD_balance = float(self.driver.find_element_by_id('balance_USD').get_attribute("innerHTML"))
+        current_IRR_balance = float(self.driver.find_element_by_id('balance_IRR').get_attribute("innerHTML"))
         self.findAndFillForm()
         self.submitForm()
         self.findConfirmationForm()
         self.submitForm(cancel=True)
-        self.assertTrue(float(self.driver.find_element_by_id('balance_USD').text) == current_USD_balance)
-        self.assertTrue(float(self.driver.find_element_by_id('balance_IRR').text) == current_IRR_balance)
+        self.assertTrue(float(self.driver.find_element_by_id('balance_USD').get_attribute("innerHTML")) == current_USD_balance)
+        self.assertTrue(float(self.driver.find_element_by_id('balance_IRR').get_attribute("innerHTML")) == current_IRR_balance)

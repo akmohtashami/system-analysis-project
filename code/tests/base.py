@@ -86,3 +86,10 @@ class BaseTest(unittest.TestCase):
         self.driver.close()
 
 
+class SemanticSelect(object):
+    def __init__(self, obj):
+        self.obj = obj.find_element_by_xpath("..")
+
+    def select_by_value(self, value):
+        self.obj.click()
+        self.obj.find_element_by_css_selector("[data-value={}]".format(value)).click()

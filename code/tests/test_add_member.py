@@ -1,7 +1,7 @@
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.select import Select
 
-from tests.base import BaseTest
+from tests.base import BaseTest, SemanticSelect
 from tests.email_validate import EmailValidate
 
 
@@ -17,7 +17,7 @@ class AddMemberTest(BaseTest, EmailValidate('email')):
         self.email = self.form.find_element_by_name('email')
         self.password = self.form.find_element_by_name('password1')
         self.password_confirmation = self.form.find_element_by_name('password2')
-        self.member_type = Select(self.form.find_element_by_id('member_type'))
+        self.member_type = SemanticSelect(self.form.find_element_by_id('member_type'))
         self.submit_button = self.form.find_element_by_name('submit')
 
         self.name.send_keys('test')

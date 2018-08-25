@@ -28,7 +28,7 @@
                             {% for wallet in request.user.wallets.all %}
                                 <div class="column center aligned">
                                     <i class="currency-flag currency-flag-{{wallet.currency.icon}}"></i><br/>
-                                    <div style="word-wrap:break-word; white-space: normal" id="balance_{{wallet.currency.name}}">{{ wallet.credit|floatformat:"-2" }}</div>
+                                    <div style="word-wrap:break-word; white-space: normal"><span id="balance_{{wallet.currency.name}}">{{ wallet.credit|floatformat:"-2" }}</span></div>
                                 </div>
                             {% endfor %}
                         </a>
@@ -72,9 +72,8 @@
                             <a class="ui three column grid item" href="{% url "wallet:company_wallets" %}">
                                 {% for wallet in company_wallets.all %}
                                     <div class="column center aligned">
-
                                         <i class="currency-flag currency-flag-{{wallet.currency.icon}}"></i><br/>
-                                        <div style="word-wrap:break-word; white-space: normal" id="company_balance_{{wallet.currency.name}}">{{ wallet.credit|floatformat:"-2" }}</div>
+                                        <div style="word-wrap:break-word; white-space: normal"><span id="company_balance_{{wallet.currency.name}}">{{ wallet.credit|floatformat:"-2" }}</span></div>
                                     </div>
                                 {% endfor %}
                             </a>
