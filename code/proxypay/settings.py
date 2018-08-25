@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'base',
 
     # Vendors
-    'semanticuiforms'
+    'semanticuiforms-changed'
 ]
 
 MIDDLEWARE = [
@@ -151,7 +151,7 @@ SUI_DROPDOWN_WRAPPER = (
     "</select>"
 )
 SUI_CHOICE_TEMPLATE = (
-    "<option value=\"{}\">{}</option>"
+    "<option value=\"{}\" {}>{}</option>"
 )
 
 EMAIL_HOST = 'smtp.gmail.com'
