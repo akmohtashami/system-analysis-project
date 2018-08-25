@@ -8,3 +8,4 @@ requests
 django-enumfields
 django-heroku
 gunicorn
+APScheduler==3.0.0
