@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>{{ service.name }}</h1>
-    {{ service.description_html | safe}}
+    <div id="description">{{ service.description_html | safe}}</div>
     {% if form %}
         <hr />
         {% trans 'Submit' as submit_button %}

@@ -3,6 +3,8 @@
 {% load i18n %}
 
 {% block content %}
+    <h1>{{ user.email }}</h1>
+    <hr />
     {% trans 'Save' as save_button %}
     {% include 'form.html' with form=form form_name='profile_form' submit_button_text=save_button %}
 {% endblock %}

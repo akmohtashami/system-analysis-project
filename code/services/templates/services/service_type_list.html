@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+
+<div id="list">
+    <a name="add_new_type" href="{% url 'services:add_new_type' %}">{% trans 'Add new service type' %}</a>
+    {% if services %}
+        <table class="ui table" id="service_types">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'currency' %}</th>
+                <th>{% trans 'Fee' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Edit' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for service in services %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.currency }}</td>
+                    <td>{{ service.fee }}</td>
+                    {%  if service.is_active %}
+                        <td>{% trans 'Active' %}</td>
+                    {%  else %}
+                        <td>{% trans 'Inactive' %}</td>
+                    {% endif %}
+                    <td><a href="{% url 'services:service_type_details' service.short_name %}">{% trans 'Edit' %}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="ui center aligned basic segment">
+            <p>{% trans 'There is no service type yet.' %}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

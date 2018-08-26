@@ -55,3 +55,16 @@ class WithdrawRequestForm(forms.ModelForm):
         if commit:
             obj.save()
         return obj
+
+
+class ServiceTypeDetailsForm(forms.ModelForm):
+    class Meta:
+        model = ServiceType
+        fields = ['name', 'currency', 'fee', 'description', 'min_amount', 'max_amount', 'is_active']
+        field_classes = []
+
+    def update(self, service, commit=True):
+        if commit:
+            service.save(force_update=True)
+        return service
+

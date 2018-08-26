@@ -7,14 +7,13 @@ from django.urls import reverse
 from django.views import View
 from django.utils.translation import ugettext as _
 
-from base.views import LoginRequiredView, StaffRequiredView
-from services.forms import AddServiceTypeForm, MakeRequestForm, WithdrawRequestForm
+from base.views import LoginRequiredView, StaffRequiredView, AdminRequiredView
+from services.forms import AddServiceTypeForm, MakeRequestForm, WithdrawRequestForm, ServiceTypeDetailsForm
 from services.models import ServiceType, ServiceRequest, RequestStatus
 from wallet.models import Wallet
 
-__all__ = ["AddServiceTypeView", "ServiceTypeDescriptionView",
-           "RequestsHistoryView", "WithdrawRequestView",
-           "RequestsListView", "RequestDetailsView"]
+__all__ = ["AddServiceTypeView", "ServiceTypeDescriptionView", "RequestsHistoryView", "WithdrawRequestView",
+           "RequestsListView", "RequestDetailsView", "ServiceTypeListView", "ServiceTypeDetailsView"]
 
 
 class AddServiceTypeView(View):
@@ -196,3 +195,40 @@ class RequestDetailsView(StaffRequiredView):
             return HttpResponseRedirect(reverse("services:details", kwargs={
                 "link": service_request.link
                 }))
+
+
+class ServiceTypeListView(AdminRequiredView):
+    def get(self, request):
+        return render(request, "services/service_type_list.html", context={
+            "services": ServiceType.objects.all().order_by("-name").reverse()
+        })
+
+
+class ServiceTypeDetailsView(AdminRequiredView):
+    def render_form(self, request, form, service):
+        return render(request, 'services/service_type_details.html', context={
+            "form": form,
+            "service": service
+        })
+
+    def get(self, request, service_name):
+        service = get_object_or_404(ServiceType, short_name=service_name)
+        form = ServiceTypeDetailsForm(initial={
+            'name': service.name,
+            'currency': service.currency,
+            'fee': service.fee,
+            'description': service.description,
+            'min_amount': service.min_amount,
+            'max_amount': service.max_amount,
+            'is_active': service.is_active
+        })
+        return self.render_form(request, form, service)
+
+    def post(self, request, service_name):
+        service = get_object_or_404(ServiceType, short_name=service_name)
+        form = ServiceTypeDetailsForm(request.POST, instance=service)
+        if form.is_valid():
+            form.update(service)
+            messages.success(request, _("Service type has been updated."))
+            return HttpResponseRedirect(reverse("services:service_type_details", args=(service_name,)))
+        return self.render_form(request, form, service)

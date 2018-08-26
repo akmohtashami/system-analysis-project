@@ -64,10 +64,7 @@ class AddUserForm(forms.ModelForm, RepeatPasswordForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'name', 'is_active']
-        widgets = {
-            'email': forms.TextInput(attrs={'disabled': True})
-        }
+        fields = ['name', 'is_active']
         field_classes = []
 
     def update(self, user, commit=True):

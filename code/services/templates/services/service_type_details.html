@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ service.short_name }}</h1>
+    {{ service.description_html | safe}}
+    <hr />
+    {% trans 'Save' as save_button %}
+    {% include 'form.html' with form=form form_name='service_type_details_form' submit_button_text=save_button %}
+{% endblock %}

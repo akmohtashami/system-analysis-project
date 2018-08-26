@@ -147,7 +147,7 @@ class AddUserView(AdminRequiredView):
 class UsersListView(AdminRequiredView):
     def get(self, request):
         return render(request, "users/users_list.html", context={
-            "users": User.objects.filter(type=UserType.Customer, is_superuser=False).order_by("-email").reverse()
+            "users": User.objects.filter(is_superuser=False).order_by("-email").reverse()
         })
 
 
@@ -162,16 +162,13 @@ class ProfileView(AdminRequiredView):
         user = User.objects.filter(link=link)[0]
         form = ProfileForm(initial={
             'name': user.name,
-            'email': user.email,
             'is_active': user.is_active
         })
         return self.render_form(request, form, user)
 
     def post(self, request, link):
         user = User.objects.filter(link=link)[0]
-        data = request.POST.copy()
-        data['email'] = user.email
-        form = ProfileForm(data, instance=user)
+        form = ProfileForm(request.POST, instance=user)
         if form.is_valid():
             form.update(user)
             messages.success(request, _("User has been updated."))

@@ -60,8 +60,9 @@
                         <div class="menu">
                             <a class="item" href="{% url 'edit_index' %}">{% trans 'Edit homepage' %}</a>
                             <a class="item" href="{% url 'edit_exchange_fee' %}">{% trans 'Edit exchange fee' %}</a>
-                            <a class="item" href="{% url 'services:add_new_type' %}">{% trans 'Add new service type' %}</a>
+                            <a class="item" href="{% url 'services:service_type_list' %}">{% trans 'All service type' %}</a>
                             <a class="item" href="{% url 'users:users_list' %}">{% trans 'All users' %}</a>
+                            <a class="item" href="{% url 'services:requests_list' %}">{% trans 'All requests' %}</a>
                         </div>
                     </div>
                      <div class="ui dropdown item" href="{% url 'wallet:wallets' %}">
@@ -83,7 +84,7 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if request.user.is_admin or request.user.is_employee %}
+                {% if request.user.is_employee %}
                     <a class="item" href="{% url 'services:requests_list' %}">{% trans 'All requests' %}</a>
                 {% endif %}
                 {% if available_services %}

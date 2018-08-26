@@ -1,15 +1,16 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.select import Select
 
-from tests.base import BaseTest, SemanticSelect
+from tests.base import SemanticSelect
+from tests.base_django import BaseDjangoTest
 
 
-class ManageRequestTypeTest(BaseTest):
+class ManageRequestTypeTest(BaseDjangoTest):
 
     def setUp(self):
         super(ManageRequestTypeTest, self).setUp()
         self.loginAsManager()
-        self.getURL("requests")
+        self.getURL(reverse("services:service_type_list"))
 
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
@@ -20,18 +21,22 @@ class ManageRequestTypeTest(BaseTest):
                 return True
         self.wait_for(link_has_gone_stale)
 
-    def findForm(self):
-        self.form = self.driver.find_element_by_css_selector("form[name='request_type_form']")
-        self.short_name = self.form.find_element_by_name("short_name")
+    def findForm(self, edit=False):
+        if not edit:
+            self.form = self.driver.find_element_by_css_selector("form[name='service_type_form']")
+            self.short_name = self.form.find_element_by_name("short_name")
+        else:
+            self.form = self.driver.find_element_by_css_selector("form[name='service_type_details_form']")
         self.name = self.form.find_element_by_name("name")
         self.currency = SemanticSelect(self.form.find_element_by_name("currency"))
         self.fee = self.form.find_element_by_name("fee")
-        self.visible = self.form.find_element_by_name("visible")
-        self.description = self.form.find_element_by_name("text")
+        self.visible = self.form.find_element_by_name("is_active")
+        self.description = self.form.find_element_by_name("description")
         self.submit_button = self.form.find_element_by_name("submit")
 
-    def fillForm(self):
-        self.short_name.send_keys("toefl")
+    def fillForm(self, edit=False):
+        if not edit:
+            self.short_name.send_keys("toefl")
         self.name.send_keys("TOEFL")
         self.currency.select_by_value("USD")
         self.fee.send_keys("7")
@@ -39,9 +44,9 @@ class ManageRequestTypeTest(BaseTest):
         if not self.visible.is_selected():
             self.visible.click()
 
-    def findAndFillForm(self):
-        self.findForm()
-        self.fillForm()
+    def findAndFillForm(self, edit=False):
+        self.findForm(edit)
+        self.fillForm(edit)
 
     def submitForm(self):
         # Not using self.form.submit deliberately
@@ -53,7 +58,6 @@ class ManageRequestTypeTest(BaseTest):
                 return False
             except StaleElementReferenceException:
                 return True
-
         self.wait_for(form_has_gone_stale)
 
     def findAddForm(self):
@@ -75,11 +79,11 @@ class ManageRequestTypeTest(BaseTest):
             except:
                 pass
         self.assertTrue(found)
-        self.findForm()
+        self.findForm(edit=True)
 
     def findList(self):
-        self.add_link = self.driver.find_element_by_partial_link_text("Add")
-        self.table = self.driver.find_element_by_id("request-types")
+        self.add_link = self.driver.find_element_by_name("add_new_type")
+        self.table = self.driver.find_element_by_id("service_types")
 
     def test_list(self):
         self.findList()
@@ -89,7 +93,7 @@ class ManageRequestTypeTest(BaseTest):
         self.fillForm()
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("requests")
+        self.getURL(reverse("services:service_type_list"))
         self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
@@ -103,7 +107,9 @@ class ManageRequestTypeTest(BaseTest):
         self.findAddForm()
         self.fillForm()
         self.submitForm()
-        self.getURL("request/toefl")
+        self.logout()
+        self.loginAsCustomer()
+        self.getURL(reverse("services:service_description", args=('toefl',)))
         self.assertTrue("Some description" in self.driver.find_element_by_id("description").get_attribute("innerHTML"))
 
     def test_visibilty_false(self):
@@ -111,7 +117,9 @@ class ManageRequestTypeTest(BaseTest):
         self.fillForm()
         self.visible.click()
         self.submitForm()
-        self.getURL("request/toefl")
+        self.logout()
+        self.loginAsCustomer()
+        self.getURL(reverse("services:service_description", args=('toefl',)))
         error = False
         try:
             self.driver.find_element_by_id("description")
@@ -121,14 +129,11 @@ class ManageRequestTypeTest(BaseTest):
 
     def test_edit_submit(self):
         self.findEditForm()
-        self.assertTrue(len(self.short_name.text) > 0)
-        self.assertTrue(len(self.name.text) > 0)
-        self.assertTrue(len(self.fee.text) > 0)
         self.name.clear()
         self.name.send_keys("EDITED")
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("requests")
+        self.getURL(reverse("services:service_type_list"))
         self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
@@ -143,38 +148,5 @@ class ManageRequestTypeTest(BaseTest):
         self.fillForm()
         self.short_name.clear()
         self.short_name.send_keys("Aa aa")
-        self.submitForm()
-        self.findForm()
-
-    def test_short_name_in_edit(self):
-        self.findEditForm()
-        self.short_name.clear()
-        self.short_name.send_keys("Aa aa")
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_short_name_in_add(self):
-        self.findAddForm()
-        self.fillForm()
-        self.short_name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_short_name_in_edit(self):
-        self.findEditForm()
-        self.short_name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_name_in_add(self):
-        self.findAddForm()
-        self.fillForm()
-        self.name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_name_in_edit(self):
-        self.findEditForm()
-        self.name.clear()
         self.submitForm()
         self.findForm()
