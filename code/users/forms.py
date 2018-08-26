@@ -20,6 +20,20 @@ class RegisterForm(forms.ModelForm, RepeatPasswordForm):
         return user
 
 
+class RegisterWithLinkForm(forms.ModelForm, RepeatPasswordForm):
+    class Meta:
+        model = User
+        fields = ['name', ]
+        field_classes = []
+
+    def update(self, user, commit=True):
+        if commit:
+            user.save(force_update=True)
+            user.set_password(self.cleaned_data.get("password1"))
+            user.save(force_update=True)
+        return user
+
+
 class LoginForm(AuthenticationForm):
     error_messages = {
         'invalid_login': _(

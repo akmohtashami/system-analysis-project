@@ -1,4 +1,5 @@
-import math
+from urllib.parse import urlparse
+
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import F
@@ -15,6 +16,7 @@ from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChar
     ExchangeConfirmationForm
 from wallet.models import Currency, Wallet
 from wallet.utils import get_exchange_rates, get_input_from_output_amount
+from utils.mail import send_email
 
 __all__ = ["MyWalletsView", "CompanyWalletsView",
            "UserRialChargeView", "ExchangeRateView",
@@ -50,6 +52,14 @@ class UserRialChargeView(View):
             due_amount = charge_amount * (1 + fee)
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
+                if created:
+                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR."
+                                                               "Register with link below to use that:\\" %(charge_amount)) +
+                            reverse("users:register_with_link", args=(user.link,))
+                            , [user, ]):
+                        messages.success(request, _('Your email has been send successfully.'))
+                    else:
+                        messages.warning(request, _('Your email has not been send.'))
                 user.wallets.filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
                 Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + fee)
                 user.notify_charge(charge_amount)

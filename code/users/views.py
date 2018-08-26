@@ -9,7 +9,8 @@ from django.views import View
 from django.utils.translation import ugettext as _
 
 from base.views import AdminRequiredView, LoginRequiredView
-from users.forms import RegisterForm, LoginForm, ChangePasswordForm, SendEmailToUsersForm, AddUserForm, ProfileForm
+from users.forms import RegisterForm, LoginForm, ChangePasswordForm, SendEmailToUsersForm, AddUserForm, ProfileForm, \
+    RegisterWithLinkForm
 from users.models import User, UserType
 from utils.mail import send_email
 
@@ -46,11 +47,26 @@ class RegisterView(NotAuthenticatedView):
         return self.render_form(request, form)
 
 
-class RegisterWithLinkView(RegisterView):
-    def get(self, request):
-        form = RegisterForm(initial={'email': 'peyman.jabarzade@gmail.com'})
-        form.fields['email'].__setattr__('disabled', True)
-        return self.render_form(request, form)
+class RegisterWithLinkView(NotAuthenticatedView):
+    def render_form(self, request, form, user):
+        return render(request, 'users/profile.html', context={
+            "form": form,
+            "user": user
+        })
+
+    def get(self, request, link):
+        user = User.objects.filter(link=link)[0]
+        form = RegisterWithLinkForm()
+        return self.render_form(request, form, user)
+
+    def post(self, request, link):
+        user = User.objects.filter(link=link)[0]
+        form = RegisterWithLinkForm(request.POST, instance=user)
+        if form.is_valid():
+            form.update(user)
+            messages.success(request, _("You have been successfully registered."))
+            return HttpResponseRedirect(reverse("users:login"))
+        return self.render_form(request, form, user)
 
 
 class LoginView(NotAuthenticatedView):
