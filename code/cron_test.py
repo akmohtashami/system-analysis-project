@@ -1,6 +1,8 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from django.core.management import call_command
 
+import os
+
 scheduler = BlockingScheduler()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "proxypay.settings")
