@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ page.name }}</h1>
+    <hr />
+    <div id="text">{{ page.description_html | safe}}</div>
+{% endblock %}

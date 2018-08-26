@@ -4,9 +4,9 @@ from enum import Enum
 import markdown
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator, RegexValidator, MinValueValidator
+from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
-from django.db.models.signals import class_prepared, post_migrate
+from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 

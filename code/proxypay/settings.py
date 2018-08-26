@@ -75,6 +75,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'services.context_processors.available_services',
+                'static_pages.context_processors.available_pages',
                 'wallet.context_processors.company_wallets'
             ],
         },

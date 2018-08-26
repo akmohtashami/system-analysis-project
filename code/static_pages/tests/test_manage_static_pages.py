@@ -1,17 +1,15 @@
+from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.select import Select
 
-from tests.amount_validate import AmountValidate
-from tests.base import BaseTest
-from tests.email_validate import EmailValidate
+from tests.base_django import BaseDjangoTest
 
 
-class ManageStaticPagesTest(BaseTest):
+class ManageStaticPagesTest(BaseDjangoTest):
 
     def setUp(self):
         super(ManageStaticPagesTest, self).setUp()
         self.loginAsManager()
-        self.getURL("pages")
+        self.getURL(reverse('pages:pages_list'))
 
     def wait_until_list_is_gone(self):
         def link_has_gone_stale(driver):
@@ -22,11 +20,12 @@ class ManageStaticPagesTest(BaseTest):
                 return True
         self.wait_for(link_has_gone_stale)
 
-    def findForm(self):
+    def findForm(self, edit=False):
         self.form = self.driver.find_element_by_css_selector("form[name='static_page_form']")
-        self.short_name = self.form.find_element_by_name("short_name")
+        if not edit:
+            self.short_name = self.form.find_element_by_name("short_name")
         self.name = self.form.find_element_by_name("name")
-        self.visible = self.form.find_element_by_name("visible")
+        self.visible = self.form.find_element_by_name("is_visible")
         self.description = self.form.find_element_by_name("text")
         self.submit_button = self.form.find_element_by_name("submit")
 
@@ -59,6 +58,10 @@ class ManageStaticPagesTest(BaseTest):
         self.findForm()
 
     def findEditForm(self):
+        self.findAddForm()
+        self.fillForm()
+        self.submitForm()
+        self.getURL(reverse('pages:pages_list'))
         self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
@@ -71,11 +74,11 @@ class ManageStaticPagesTest(BaseTest):
             except:
                 pass
         self.assertTrue(found)
-        self.findForm()
+        self.findForm(edit=True)
 
     def findList(self):
         self.add_link = self.driver.find_element_by_partial_link_text("Add")
-        self.table = self.driver.find_element_by_id("request-types")
+        self.table = self.driver.find_element_by_id("list")
 
     def test_list(self):
         self.findList()
@@ -85,7 +88,7 @@ class ManageStaticPagesTest(BaseTest):
         self.fillForm()
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("pages")
+        self.getURL(reverse('pages:pages_list'))
         self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
@@ -99,15 +102,15 @@ class ManageStaticPagesTest(BaseTest):
         self.findAddForm()
         self.fillForm()
         self.submitForm()
-        self.getURL("page/static_page")
-        self.assertTrue("Some description" in self.driver.find_element_by_id("description").get_attribute("innerHTML"))
+        self.getURL(reverse('pages:page_description', args=('static_page', )))
+        self.assertTrue("Some description" in self.driver.find_element_by_id("text").get_attribute("innerHTML"))
 
     def test_visibilty_false(self):
         self.findAddForm()
         self.fillForm()
         self.visible.click()
         self.submitForm()
-        self.getURL("page/static_page")
+        self.getURL(reverse('pages:page_description', args=('static_page', )))
         error = False
         try:
             self.driver.find_element_by_id("description")
@@ -117,13 +120,11 @@ class ManageStaticPagesTest(BaseTest):
 
     def test_edit_submit(self):
         self.findEditForm()
-        self.assertTrue(len(self.short_name.text) > 0)
-        self.assertTrue(len(self.name.text) > 0)
         self.name.clear()
         self.name.send_keys("EDITED")
         self.submitForm()
         self.driver.find_element_by_class_name("success")
-        self.getURL("pages")
+        self.getURL(reverse('pages:pages_list'))
         self.findList()
         first_row = self.table.find_elements_by_tag_name("tr")[1].find_elements_by_tag_name("td")
         found = False
@@ -140,43 +141,3 @@ class ManageStaticPagesTest(BaseTest):
         self.short_name.send_keys("Aa aa")
         self.submitForm()
         self.findForm()
-
-    def test_short_name_in_edit(self):
-        self.findEditForm()
-        self.short_name.clear()
-        self.short_name.send_keys("Aa aa")
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_short_name_in_add(self):
-        self.findAddForm()
-        self.fillForm()
-        self.short_name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_short_name_in_edit(self):
-        self.findEditForm()
-        self.short_name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_name_in_add(self):
-        self.findAddForm()
-        self.fillForm()
-        self.name.clear()
-        self.submitForm()
-        self.findForm()
-
-    def test_empty_name_in_edit(self):
-        self.findEditForm()
-        self.name.clear()
-        self.submitForm()
-        self.findForm()
-
-
-
-
-
-
-

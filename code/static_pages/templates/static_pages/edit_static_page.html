@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ page.short_name }}</h1>
+    <hr />
+    {% trans 'Save' as save_button %}
+    {% include 'form.html' with form=form form_name='static_page_form' submit_button_text=save_button %}
+{% endblock %}

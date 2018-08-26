@@ -63,6 +63,7 @@
                             <a class="item" href="{% url 'services:service_type_list' %}">{% trans 'All service type' %}</a>
                             <a class="item" href="{% url 'users:users_list' %}">{% trans 'All users' %}</a>
                             <a class="item" href="{% url 'services:requests_list' %}">{% trans 'All requests' %}</a>
+                            <a class="item" href="{% url 'pages:pages_list' %}">{% trans 'All pages' %}</a>
                         </div>
                     </div>
                      <div class="ui dropdown item" href="{% url 'wallet:wallets' %}">
@@ -94,6 +95,17 @@
                         <div class="menu">
                             {% for service in available_services %}
                                 <a class="item" href="{% url 'services:service_description' service.short_name %}">{{ service.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if available_pages %}
+                    <div class="ui dropdown item" href="{% url 'wallet:wallets' %}">
+                        {% trans 'Pages' %}
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            {% for page in available_pages %}
+                                <a class="item" href="{% url 'pages:page_description' page.short_name %}">{{ page.name }}</a>
                             {% endfor %}
                         </div>
                     </div>

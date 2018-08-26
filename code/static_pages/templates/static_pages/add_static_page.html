@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load semanticui %}
+{% load i18n %}
+
+{% block content %}
+<form action='' name="static_page_form" method="post" class="ui form">
+    {% csrf_token %}
+    {% render_form form %}
+    <button type="submit" class="ui button" name="submit">{% trans 'Save' %}</button>
+</form>
+{% endblock %}
