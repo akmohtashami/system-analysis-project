@@ -101,7 +101,7 @@ class ServiceRequest(models.Model):
     amount = models.FloatField(verbose_name=_("amount"), validators=[MinValueValidator(0)])
     description = models.TextField(verbose_name=_("description"), blank=True)
     status = EnumField(RequestStatus, verbose_name=_("status"), default=RequestStatus.PENDING)
-    creation_date = models.DateField(auto_now_add=True, verbose_name=_("creation date"))
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     link = models.CharField(max_length=100, editable=False, default=uuid.uuid4)
 
 

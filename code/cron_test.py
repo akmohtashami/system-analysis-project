@@ -1,10 +1,12 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
+from django.core.management import call_command
 
-sched = BlockingScheduler()
-
-@sched.scheduled_job('interval', minutes=1)
-def test():
-    print("HI")
+scheduler = BlockingScheduler()
 
 
-sched.start()
+@scheduler.scheduled_job('interval', minutes=1)
+def run_reject_long_waiting_requests():
+    call_command("reject_long_waiting_requests")
+
+
+scheduler.start()
