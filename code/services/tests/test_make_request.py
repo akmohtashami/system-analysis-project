@@ -70,7 +70,7 @@ class MakeRequestTest(BaseDjangoTest, AmountValidate("amount")):
 
     def test_confirm(self):
         self.findConfirmPage()
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -84,12 +84,12 @@ class MakeRequestTest(BaseDjangoTest, AmountValidate("amount")):
 
         self.wait_for(form_has_gone_stale)
 
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance - self.total_due)
 
     def test_cancel(self):
         self.findConfirmPage()
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.back_button.click()
@@ -103,7 +103,7 @@ class MakeRequestTest(BaseDjangoTest, AmountValidate("amount")):
 
         self.wait_for(form_has_gone_stale)
 
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_text_multi_line(self):

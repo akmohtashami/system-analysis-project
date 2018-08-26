@@ -69,7 +69,7 @@ class RialChargeRequestTest(BaseDjangoTest,
 
     def test_confirm(self):
         self.find_confirm_page()
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -82,7 +82,7 @@ class RialChargeRequestTest(BaseDjangoTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance + self.charge_amount)
 
     def test_charge_other_existing_user(self):
@@ -91,7 +91,7 @@ class RialChargeRequestTest(BaseDjangoTest,
         self.email.send_keys(self.CUSTOMER_INFO[1][0])
         self.submitForm()
         self.processConfirmPage()
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -104,7 +104,7 @@ class RialChargeRequestTest(BaseDjangoTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_charge_other_non_existing_user(self):
@@ -113,7 +113,7 @@ class RialChargeRequestTest(BaseDjangoTest,
         self.email.send_keys("oh_my_god_this_can_not_exist@localhost")
         self.submitForm()
         self.processConfirmPage()
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.submit_button.click()
@@ -126,13 +126,13 @@ class RialChargeRequestTest(BaseDjangoTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_cancel(self):
         self.find_confirm_page()
 
-        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        current_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
 
         # Not using self.form.submit deliberately
         self.back_button.click()
@@ -145,7 +145,7 @@ class RialChargeRequestTest(BaseDjangoTest,
                 return True
 
         self.wait_for(form_has_gone_stale)
-        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").text)
+        new_irr_balance = float(self.driver.find_element_by_id("balance_IRR").get_attribute("innerHTML"))
         self.assertTrue(new_irr_balance == current_irr_balance)
 
     def test_logged_in_default_email(self):

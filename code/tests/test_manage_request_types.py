@@ -1,7 +1,7 @@
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.select import Select
 
-from tests.base import BaseTest
+from tests.base import BaseTest, SemanticSelect
 
 
 class ManageRequestTypeTest(BaseTest):
@@ -24,7 +24,7 @@ class ManageRequestTypeTest(BaseTest):
         self.form = self.driver.find_element_by_css_selector("form[name='request_type_form']")
         self.short_name = self.form.find_element_by_name("short_name")
         self.name = self.form.find_element_by_name("name")
-        self.currency = Select(self.form.find_element_by_name("currency"))
+        self.currency = SemanticSelect(self.form.find_element_by_name("currency"))
         self.fee = self.form.find_element_by_name("fee")
         self.visible = self.form.find_element_by_name("visible")
         self.description = self.form.find_element_by_name("text")

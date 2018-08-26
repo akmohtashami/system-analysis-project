@@ -3,16 +3,16 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.ui import Select
 
 from tests.amount_validate import AmountValidate
-from tests.base import BaseTest
+from tests.base import BaseTest, SemanticSelect
 from tests.base_django import BaseDjangoTest
 
 
 class SimulateExchangeTestBase():
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='simulate_exchange_form']")
-        self.input_currency = Select(self.driver.find_element_by_name('input_currency'))
+        self.input_currency = SemanticSelect(self.driver.find_element_by_name('input_currency'))
         self.input_amount = self.driver.find_element_by_name('input_amount')
-        self.output_currency = Select(self.driver.find_element_by_name('output_currency'))
+        self.output_currency = SemanticSelect(self.driver.find_element_by_name('output_currency'))
         self.output_amount = self.driver.find_element_by_name('output_amount')
         self.calc_inp_button = self.driver.find_element_by_name('calc_inp')
         self.calc_out_button = self.driver.find_element_by_name('calc_out')

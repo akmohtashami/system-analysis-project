@@ -3,6 +3,7 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.select import Select
 
 from tests.base_django import BaseDjangoTest
+from tests.base import SemanticSelect
 from tests.email_validate import EmailValidate
 
 
@@ -18,7 +19,7 @@ class AddMemberTest(BaseDjangoTest, EmailValidate('email')):
         self.email = self.form.find_element_by_name('email')
         self.password = self.form.find_element_by_name('password1')
         self.password_confirmation = self.form.find_element_by_name('password2')
-        self.type = Select(self.form.find_element_by_name('type'))
+        self.type = SemanticSelect(self.form.find_element_by_name('type'))
         self.submit_button = self.form.find_element_by_name('submit')
 
         self.name.send_keys('test')

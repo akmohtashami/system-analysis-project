@@ -49,3 +49,4 @@ class CompanyWalletTest(BaseDjangoTest, AmountValidate("charge_amount")):
         self.submitForm()
         self.driver.find_element_by_class_name("success")
         self.assertTrue(float(self.rial_balance.text) == current_balance + 1000)
+

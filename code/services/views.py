@@ -65,46 +65,53 @@ class ServiceTypeDescriptionView(View):
         form = self.form(request.POST, instance=req)
         if form.is_valid():
             amount = form.cleaned_data["amount"]
-            fee = amount * service.fee / 100.0
-            total_due = amount + fee
-            if "confirm_button" in request.POST:
-                with transaction.atomic():
-                    updated = request.user.wallets.filter(
-                        currency=service.currency,
-                        credit__gte=total_due
-                    ).update(
-                        credit=F('credit') - total_due
-                    )
-                    if updated == 0:
-                        transaction.set_rollback(True)
-                        messages.error(request, _("Insufficient funds"))
-                        return HttpResponseRedirect(reverse("services:service_description", kwargs={
-                            "service_name": service_name
-                        }))
-                    if fee > 0:
-                        updated = Wallet.get_company_wallets().filter(
-                            currency=service.currency
+            if service.min_amount is not None and service.min_amount > amount:
+                form.add_error("amount",
+                               _("Amount can not be less than %(amount)s" % {"amount": str(service.min_amount)}))
+            elif service.max_amount is not None and service.max_amount < amount:
+                form.add_error("amount",
+                               _("Amount can not be more than %(amount)s" % {"amount": str(service.max_amount)}))
+            else:
+                fee = amount * service.fee / 100.0
+                total_due = amount + fee
+                if "confirm_button" in request.POST:
+                    with transaction.atomic():
+                        updated = request.user.wallets.filter(
+                            currency=service.currency,
+                            credit__gte=total_due
                         ).update(
-                            credit=F('credit') + fee
+                            credit=F('credit') - total_due
                         )
                         if updated == 0:
                             transaction.set_rollback(True)
-                            messages.error(request, _("Internal error. Please try again in a few minutes"))
+                            messages.error(request, _("Insufficient funds"))
                             return HttpResponseRedirect(reverse("services:service_description", kwargs={
                                 "service_name": service_name
                             }))
-                    form.save()
-                messages.success(request, _("Your request have been successfully submitted"))
-                return HttpResponseRedirect(reverse("services:requests_history"))
-            elif "back_button" not in request.POST:
-                instance = form.save(commit=False)
-                return render(request, "services/service_request_confirm.html", context={
-                    "service": service,
-                    "form": form,
-                    "amount": instance.amount,
-                    "description": instance.description,
-                    "total_due": total_due
-                })
+                        if fee > 0:
+                            updated = Wallet.get_company_wallets().filter(
+                                currency=service.currency
+                            ).update(
+                                credit=F('credit') + fee
+                            )
+                            if updated == 0:
+                                transaction.set_rollback(True)
+                                messages.error(request, _("Internal error. Please try again in a few minutes"))
+                                return HttpResponseRedirect(reverse("services:service_description", kwargs={
+                                    "service_name": service_name
+                                }))
+                        form.save()
+                    messages.success(request, _("Your request have been successfully submitted"))
+                    return HttpResponseRedirect(reverse("services:requests_history"))
+                elif "back_button" not in request.POST:
+                    instance = form.save(commit=False)
+                    return render(request, "services/service_request_confirm.html", context={
+                        "service": service,
+                        "form": form,
+                        "amount": instance.amount,
+                        "description": instance.description,
+                        "total_due": total_due
+                    })
         return render(request, "services/service_description.html", context={
             "service": service,
             "form": form

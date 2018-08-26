@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-25 00:09+0000\n"
+"POT-Creation-Date: 2018-08-25 11:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,67 +39,75 @@ msgstr "صفحه‌ی اول با موفقیت به‌روز‌رسانی شد"
 msgid "Exchange fee updated successfully"
 msgstr "کارمزد تبدیل با موفقیت به‌روز‌رسانی شد"
 
-#: services/forms.py:25
+#: services/forms.py:27
 msgid "Invalid sheba number"
 msgstr "شماره‌ی شبای نامعتبر"
 
-#: services/forms.py:47
+#: services/forms.py:49
 msgid "Sheba number"
 msgstr "شماره‌ی شبا"
 
-#: services/models.py:19
+#: services/models.py:20
 msgid "short name"
 msgstr "نام کوتاه"
 
-#: services/models.py:25 static_pages/forms.py:10 users/models.py:57
+#: services/models.py:26 static_pages/forms.py:10 users/models.py:57
 msgid "name"
 msgstr "نام"
 
-#: services/models.py:30 services/models.py:83 wallet/models.py:35
+#: services/models.py:31 wallet/models.py:35
 msgid "currency"
 msgstr "واحد"
 
-#: services/models.py:33
+#: services/models.py:34
 msgid "transaction fee"
 msgstr "کارمزد تراکنش"
 
-#: services/models.py:37 users/models.py:70
+#: services/models.py:38 users/models.py:70
 msgid "active"
 msgstr "فعال"
 
-#: services/models.py:39
+#: services/models.py:40
 msgid "Designate whether this type of requests can be created."
 msgstr "مشخص می‌کند آیا این نوع از درخواست‌ها قابل ایجاد هستند."
 
-#: services/models.py:42 services/models.py:85
+#: services/models.py:43 services/models.py:85
 msgid "description"
 msgstr "توضیحات"
 
-#: services/models.py:53
+#: services/models.py:54
 msgid "Withdraw is only allowed from IRR account"
 msgstr "برداشت تنها از حساب ریالی مجاز است"
 
-#: services/models.py:64
+#: services/models.py:65
 msgid "Pending"
 msgstr "در انتظار"
 
-#: services/models.py:65
+#: services/models.py:66
+msgid "Processing"
+msgstr "در حال انجام"
+
+#: services/models.py:67 services/templates/services/request_details.html:29
 msgid "Done"
 msgstr "انجام شده"
 
-#: services/models.py:66
+#: services/models.py:68
 msgid "Rejected"
 msgstr "رد شده"
 
-#: services/models.py:76
+#: services/models.py:78
 msgid "service type"
 msgstr "نوع سرویس"
 
-#: services/models.py:78 wallet/models.py:29
+#: services/models.py:80 wallet/models.py:29
 msgid "owner"
 msgstr "صاحب"
 
-#: services/models.py:80
+#: services/models.py:82
+msgid "operator"
+msgstr "کارمند"
+
+#: services/models.py:84
 msgid "amount"
 msgstr "مقدار"
 
@@ -112,15 +119,25 @@ msgstr "وضعیت"
 msgid "creation date"
 msgstr "تاریخ ایجاد"
 
-#: services/models.py:96
+#: services/models.py:97 templates/base.html:39
 msgid "Withdraw"
 msgstr "برداشت"
 
+#: services/templates/services/request_details.html:26
+msgid "Accept"
+msgstr "پذیرفتن"
+
+#: services/templates/services/request_details.html:28
+msgid "Reject"
+msgstr "رد کردن"
+
 #: services/templates/services/requests_history.html:13
+#: services/templates/services/requests_list.html:13
 msgid "Type"
 msgstr "نوع"
 
 #: services/templates/services/requests_history.html:14
+#: services/templates/services/requests_list.html:15
 #: services/templates/services/service_request_confirm.html:30
 #: wallet/forms.py:11 wallet/forms.py:15
 #: wallet/templates/wallet/rial_charge_confirm.html:27
@@ -128,17 +145,36 @@ msgid "Amount"
 msgstr "مقدار"
 
 #: services/templates/services/requests_history.html:15
-#: users/templates/users/users_list.html:15
+#: services/templates/services/requests_list.html:16
+#: users/templates/users/users_list.html:16
 msgid "Status"
 msgstr "وضعیت"
 
 #: services/templates/services/requests_history.html:16
+#: services/templates/services/requests_list.html:17
 msgid "Date"
 msgstr "تاریخ"
 
 #: services/templates/services/requests_history.html:33
 msgid "You have not submitted any requests yet"
 msgstr "شما هنوز هیچ درخواستی ارسال نکرده‌اید"
+
+#: services/templates/services/requests_list.html:14
+msgid "User"
+msgstr "کاربر"
+
+#: services/templates/services/requests_list.html:18
+msgid "Operator"
+msgstr "کارمند"
+
+#: services/templates/services/requests_list.html:19
+#: services/templates/services/requests_list.html:32
+msgid "Details"
+msgstr "جزییات"
+
+#: services/templates/services/requests_list.html:39
+msgid "No requests yet"
+msgstr "تاکنون درخواستی داده نشده است"
 
 #: services/templates/services/service_description.html:10
 msgid "Submit"
@@ -171,23 +207,37 @@ msgstr "بازگشت"
 msgid ""
 "Due to fluctuations in exchange rates the values may not be accurate after "
 "%(error)s decimal digits."
-msgstr "به دلیل نوسانات نرخ ارز مقادیر ممکن است بعد از %(error)s رقم اعشار دقیق نباشند."
+msgstr ""
+"به دلیل نوسانات نرخ ارز مقادیر ممکن است بعد از %(error)s رقم اعشار دقیق "
+"نباشند."
 
-#: services/views.py:34
+#: services/views.py:35
 msgid "New service type has been successfully added."
 msgstr "نوع سرویس جدید با موفقیت اضافه شد."
 
-#: services/views.py:78 wallet/views.py:117
+#: services/views.py:80 wallet/views.py:117
 msgid "Insufficient funds"
 msgstr "موجودی ناکافی"
 
-#: services/views.py:90
+#: services/views.py:92
 msgid "Internal error. Please try again in a few minutes"
 msgstr "خطای داخلی. لطفا چند دقیقه‌ی دیگر دوباره تلاش کنید"
 
-#: services/views.py:95
+#: services/views.py:97
 msgid "Your request have been successfully submitted"
 msgstr "درخواست شما با موفقیت ارسال شده است"
+
+#: services/views.py:174
+msgid "You can't accept this request."
+msgstr "شما نمی‌توانید این درخواست را بپذیرید."
+
+#: services/views.py:187
+msgid "You can't reject this request."
+msgstr "شما نمی‌توانید این درخواست را رد کنید."
+
+#: services/views.py:200
+msgid "You can't finish this request."
+msgstr "شما نمی‌توانید این درخواست را به پایان برسانید."
 
 #: static_pages/forms.py:7 users/models.py:53
 msgid "email"
@@ -202,9 +252,9 @@ msgstr "متن"
 msgid ""
 "\n"
 "New message received from %(name)s (%(email)s):\n"
-msgstr "\n"
-"پیام جدید دریافت شد از"
- "%(name)s (%(email)s):\n"
+msgstr ""
+"\n"
+"پیام جدید دریافت شد از%(name)s (%(email)s):\n"
 
 #: static_pages/views.py:31
 msgid "Feedback"
@@ -218,42 +268,24 @@ msgstr "نامه‌ی شما با موفقیت ارسال شد."
 msgid "Your email has not been send."
 msgstr "نامه‌ی شما ارسال نشده است."
 
-#: templates/base.html:21
-msgid "Home"
-msgstr "خانه"
-
-#: templates/base.html:22
-msgid "Exchange rates"
-msgstr "نرخ‌های تبدیل"
-
-#: templates/base.html:24
-msgid "Edit homepage"
-msgstr "ویرایش صفحه‌ی اول"
-
-#: templates/base.html:25
-msgid "Edit exchange fee"
-msgstr "ویرایش کارمزد تبدیل"
-
-#: templates/base.html:26
-msgid "Add new service type"
-msgstr "افزودن نوع سرویس جدید"
-
-#: templates/base.html:27
-msgid "All users"
-msgstr "تمام کاربران"
-
-#: templates/base.html:31 wallet/templates/wallet/exchange.html:6
-msgid "Exchange"
-msgstr "تبدیل"
-
-#: templates/base.html:32
-msgid "Logout"
-msgstr "خروج"
-
-#: templates/base.html:39 wallet/templates/wallet/company_wallets.html:16
+#: templates/base.html:36 templates/base.html:81
+#: wallet/templates/wallet/company_wallets.html:16
 #: wallet/templates/wallet/rial_charge.html:6
 msgid "Charge"
 msgstr "شارژ"
+
+#: templates/base.html:37 templates/base.html:82
+#: wallet/templates/wallet/exchange.html:6
+msgid "Exchange"
+msgstr "تبدیل"
+
+#: templates/base.html:41
+msgid "Order history"
+msgstr "تاریخچه‌ی سفارش‌ها"
+
+#: templates/base.html:43
+msgid "Logout"
+msgstr "خروج"
 
 #: templates/base.html:47 users/templates/users/login.html:6
 msgid "Login"
@@ -262,6 +294,50 @@ msgstr "ورود"
 #: templates/base.html:48 users/templates/users/register.html:6
 msgid "Register"
 msgstr "ثبت‌نام"
+
+#: templates/base.html:51
+msgid "Home"
+msgstr "خانه"
+
+#: templates/base.html:53
+msgid "Send credit"
+msgstr "ارسال اعتبار"
+
+#: templates/base.html:55
+msgid "Exchange rates"
+msgstr "نرخ‌های تبدیل"
+
+#: templates/base.html:58
+msgid "Admin"
+msgstr "مدیریت"
+
+#: templates/base.html:61
+msgid "Edit homepage"
+msgstr "ویرایش صفحه‌ی اول"
+
+#: templates/base.html:62
+msgid "Edit exchange fee"
+msgstr "ویرایش کارمزد تبدیل"
+
+#: templates/base.html:63
+msgid "Add new service type"
+msgstr "افزودن نوع سرویس جدید"
+
+#: templates/base.html:64
+msgid "All users"
+msgstr "تمام کاربران"
+
+#: templates/base.html:68
+msgid "Company account"
+msgstr "حساب شرکت"
+
+#: templates/base.html:87
+msgid "All requests"
+msgstr "تمام درخواست‌ها"
+
+#: templates/base.html:91
+msgid "Services"
+msgstr "خدمات"
 
 #: templates/send-email.html:6
 msgid "Send"
@@ -272,7 +348,9 @@ msgstr "ارسال"
 msgid ""
 "Please enter a correct %(username)s and password. Note that password is case-"
 "sensitive."
-msgstr "لطفا یک %(username)s و رمز عبور صحیح وارد کنید. توجه کنید که رمز عبور به بزرگی و کوچکی حروف حساس است"
+msgstr ""
+"لطفا یک %(username)s و رمز عبور صحیح وارد کنید. توجه کنید که رمز عبور به "
+"بزرگی و کوچکی حروف حساس است"
 
 #: users/forms.py:29
 msgid "This account is inactive."
@@ -298,7 +376,9 @@ msgstr "مشخص می‌کند آیا کاربر می‌تواند وارد قس
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
-msgstr "مشخص می‌کند آیا این کاربر فعال است. به جای حذف کردن، این گزینه را غیرفعال کنید."
+msgstr ""
+"مشخص می‌کند آیا این کاربر فعال است. به جای حذف کردن، این گزینه را غیرفعال "
+"کنید."
 
 #: users/models.py:78
 msgid "type"
@@ -316,27 +396,31 @@ msgstr "تغییر رمز عبور"
 msgid "Not a member yet? register here."
 msgstr "هنوز عضو نشده‌اید؟ اینجا کلیک کنید."
 
-#: users/templates/users/users_list.html:13
+#: users/templates/users/users_list.html:7
+msgid "Add User"
+msgstr "افزودن کاربر"
+
+#: users/templates/users/users_list.html:14
 msgid "Name"
 msgstr "نام"
 
-#: users/templates/users/users_list.html:14
+#: users/templates/users/users_list.html:15
 msgid "Email"
 msgstr "پست الکترونیکی"
 
-#: users/templates/users/users_list.html:16
+#: users/templates/users/users_list.html:17
 msgid "Edit"
 msgstr "ویرایش"
 
-#: users/templates/users/users_list.html:26
+#: users/templates/users/users_list.html:27
 msgid "Active"
 msgstr "فعال"
 
-#: users/templates/users/users_list.html:28
+#: users/templates/users/users_list.html:29
 msgid "Inactive"
 msgstr "غیرفعال"
 
-#: users/templates/users/users_list.html:37
+#: users/templates/users/users_list.html:38
 msgid "There is no user yet."
 msgstr "هیچ کاربری وجود ندارد"
 
@@ -484,7 +568,9 @@ msgstr "تایید موفقیت‌آمیز نبود. لطفا دوباره تل�
 msgid ""
 "Due to fluctuations in exchange rates we were unable to process your "
 "request. Please try again."
-msgstr "با توجه به نوسانات نرخ ارز، ما نتوانستیم درخوست شما را پردازش کنیم. لطفا دوباره سعی کنید"
+msgstr ""
+"با توجه به نوسانات نرخ ارز، ما نتوانستیم درخوست شما را پردازش کنیم. لطفا "
+"دوباره سعی کنید"
 
 #: wallet/views.py:126
 msgid "Unable to transfer funds"

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'base',
 
     # Vendors
-    'semanticuiforms'
+    'semanticuiforms-changed'
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n'
+                'django.template.context_processors.i18n',
+                'services.context_processors.available_services',
+                'wallet.context_processors.company_wallets'
             ],
         },
     },
@@ -149,7 +151,7 @@ SUI_DROPDOWN_WRAPPER = (
     "</select>"
 )
 SUI_CHOICE_TEMPLATE = (
-    "<option value=\"{}\">{}</option>"
+    "<option value=\"{}\" {}>{}</option>"
 )
 
 EMAIL_HOST = 'smtp.gmail.com'
