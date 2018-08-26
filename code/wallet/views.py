@@ -11,6 +11,7 @@ from django.views import View
 
 from base.models import Config
 from base.views import LoginRequiredView, AdminRequiredView
+from proxypay.settings import PROXYPAY_URL, DEBUG, LOCAL_URL
 from users.models import User
 from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm, ExchangeForm, \
     ExchangeConfirmationForm
@@ -53,9 +54,14 @@ class UserRialChargeView(View):
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
                 if created:
-                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR."
-                                                               "Register with link below to use that:\\" %(charge_amount)) +
-                            reverse("users:register_with_link", args=(user.link,))
+                    if DEBUG == True:
+                        url = LOCAL_URL
+                    else:
+                        url = PROXYPAY_URL
+                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " %charge_amount) +
+                            "<a href=" + url + reverse("users:register_with_link", args=(user.link,)) + ">" +
+                            _("here") + "</a>" +
+                            _(" to register and use your money.")
                             , [user, ]):
                         messages.success(request, _('Your email has been send successfully.'))
                     else:

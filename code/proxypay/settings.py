@@ -144,6 +144,8 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = "users:login"
+LOCAL_URL = "localhost:8001"
+PROXYPAY_URL = "https://sheltered-scrubland-78674.herokuapp.com/"
 
 
 SUI_DROPDOWN_WRAPPER = (
@@ -158,7 +160,7 @@ SUI_CHOICE_TEMPLATE = (
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'admin@proxypay.ir'
+EMAIL_HOST_USER = 'admin@proxypay.com'
 EMAIL_HOST_PASSWORD = 'admin'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
