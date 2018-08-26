@@ -147,7 +147,7 @@ class AddUserView(AdminRequiredView):
 class UsersListView(AdminRequiredView):
     def get(self, request):
         return render(request, "users/users_list.html", context={
-            "users": User.objects.filter(type=UserType.Customer).order_by("-email").reverse()
+            "users": User.objects.filter(type=UserType.Customer, is_superuser=False).order_by("-email").reverse()
         })
 
 

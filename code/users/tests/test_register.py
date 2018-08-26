@@ -1,7 +1,6 @@
 from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 
-from tests.base import BaseTest
 from tests.base_django import BaseDjangoTest
 from tests.email_validate import EmailValidate
 

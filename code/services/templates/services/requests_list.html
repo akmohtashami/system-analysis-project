@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<div id="history">
+<div id="list">
     {% if requests %}
         <table class="ui table">
             <thead>
             <tr>
                 <th>#</th>
-                <th>{% trans 'Type' %}</th>
                 <th>{% trans 'User' %}</th>
+                <th>{% trans 'Type' %}</th>
                 <th>{% trans 'Amount' %}</th>
                 <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Date' %}</th>
@@ -36,7 +36,7 @@
         </table>
     {% else %}
         <div class="ui center aligned basic segment">
-            <p>{% trans 'You have not submitted any requests yet' %}</p>
+            <p>{% trans 'Users have not submitted any requests yet' %}</p>
         </div>
     {% endif %}
 </div>

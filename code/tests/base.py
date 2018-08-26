@@ -15,10 +15,10 @@ class BaseTest(unittest.TestCase):
 
     AGENT_INFO = [
         ["agn1@system.com", "pass", 100000],
-        ["agn2@system.com", "pass", 100000],
+        ["mgn1@system.com", "pass", 100000],
     ]
     MANAGER_INFO = [
-        ["mng1@system.com", "pass"],
+        ["peyman.jabarzade@gmail.com", "pass"],
     ]
 
     URL_PREFIX = "http://localhost:8001/"

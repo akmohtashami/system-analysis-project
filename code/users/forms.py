@@ -47,7 +47,6 @@ class SendEmailToUsersForm(forms.Form):
 
 class AddUserForm(forms.ModelForm, RepeatPasswordForm):
     type = forms.ChoiceField(choices=UserType.choices())
-    #   input_currency = User._meta.get_field("type").formfield(label=_("Type"), required=True, blank=False)
 
     class Meta:
         model = User

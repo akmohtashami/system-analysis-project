@@ -5,30 +5,52 @@
 {% block content %}
     <h1>{{ service.name }}</h1>
     {{ service.description_html | safe}}
-    <form action='' name="request_detail" method="post" class="ui form {{ form.errors | yesno:'error,' }}" novalidate>
-    {% if form.non_field_errors %}
-    <div class="ui error message">
-        {% for non_field_error in form.non_field_errors %}
-             <p>{{ non_field_error }}</p>
-        {% endfor %}
-    </div>
-    {% endif %}
+    <form action='' name="request_details_form" method="post" >
     {% csrf_token %}
-    {% render_field form.user %}
-    {% render_field form.amount %}
-    {% render_field form.currency%}
-    {% render_field form.description %}
-    {% render_field form.operator %}
-    {% render_field form.status %}
-    <div class="fields">
-        <div class="three wide field">
-            {% if is_pending %}
-                <button type="submit" class="ui tiny button primary" name="accept_button">{% trans 'Accept' %}</button>
-            {% elif is_processing %}
-                <button type="submit" class="ui tiny button primary" name="reject_button">{% trans 'Reject' %}</button>
-                <button type="submit" class="ui tiny button primary" name="finish_button">{% trans 'Done' %}</button>
+    <hr />
+    <div class="ui centered grid">
+        <table class="ui table">
+          <tbody>
+            <tr>
+              <td>{%  trans 'User' %}</td>
+              <td>{{ service_request.owner.name }}</td>
+            </tr>
+            <tr>
+              <td>{%  trans 'Amount' %}</td>
+              <td>{{ service_request.amount }} {{ service.currency }}</td>
+            </tr>
+            <tr>
+              <td>{%  trans 'Status' %}</td>
+              <td>{{ service_request.status }}</td>
+            </tr>
+            {% if service_request.operator is not None %}
+                <tr>
+                  <td>{%  trans 'Operator' %}</td>
+                  <td>{{ service_request.operator.name }}</td>
+                </tr>
             {% endif %}
-        </div>
+            <tr>
+              <td>{%  trans 'Description' %}</td>
+              <td>{{ service_request.description }}</td>
+            </tr>
+          </tbody>
+            {% if is_pending or is_processing %}
+            <tfoot>
+                <tr>
+                    <th colspan="2">
+                        <div class="three wide field">
+                            {% if is_pending %}
+                                <button type="submit" class="ui tiny button primary" name="accept_button">{% trans 'Accept' %}</button>
+                            {% elif is_processing %}
+                                <button type="submit" class="ui tiny button primary" name="reject_button">{% trans 'Reject' %}</button>
+                                <button type="submit" class="ui tiny button primary" name="finish_button">{% trans 'Done' %}</button>
+                            {% endif %}
+                        </div>
+                    </th>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
     </div>
 </form>
 {% endblock %}
