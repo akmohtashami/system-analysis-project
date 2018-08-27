@@ -125,7 +125,7 @@ class ServiceTypeDescriptionView(View):
 class RequestsHistoryView(LoginRequiredView):
     def get(self, request):
         return render(request, "services/requests_history.html", context={
-            "requests": request.user.requests.all().order_by("-id")
+            "requests": request.user.requests.all().order_by("-creation_date")
         })
 
 

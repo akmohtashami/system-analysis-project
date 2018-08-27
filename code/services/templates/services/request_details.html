@@ -16,6 +16,10 @@
               <td>{{ service_request.owner.name }}</td>
             </tr>
             <tr>
+              <td>{%  trans 'Creation Date' %}</td>
+              <td>{{ service_request.creation_date }}</td>
+            </tr>
+            <tr>
               <td>{%  trans 'Amount' %}</td>
               <td>{{ service_request.amount }} {{ service.currency }}</td>
             </tr>

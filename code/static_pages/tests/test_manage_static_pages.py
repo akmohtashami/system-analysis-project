@@ -77,7 +77,7 @@ class ManageStaticPagesTest(BaseDjangoTest):
         self.findForm(edit=True)
 
     def findList(self):
-        self.add_link = self.driver.find_element_by_partial_link_text("Add")
+        self.add_link = self.driver.find_element_by_name("add_new_page")
         self.table = self.driver.find_element_by_id("list")
 
     def test_list(self):

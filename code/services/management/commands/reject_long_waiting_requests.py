@@ -9,6 +9,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         expired_time = timezone.now() -\
                        timedelta(minutes=settings.AUTO_REJECT_TIMEOUT_MINUTES)
+        requests = ServiceRequest.objects.filter(
+            creation_date__lt=expired_time,
+            status=RequestStatus.REJECTED
+        ).all()
+        for req in requests:
+            req.owner.notify_change_status(req)
         count = ServiceRequest.objects.filter(
             creation_date__lt=expired_time,
             status=RequestStatus.PENDING

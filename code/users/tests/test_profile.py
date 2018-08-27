@@ -1,5 +1,6 @@
 from django.urls import reverse
-from selenium.common.exceptions import StaleElementReferenceException, InvalidElementStateException
+from selenium.common.exceptions import StaleElementReferenceException, InvalidElementStateException, \
+    NoSuchElementException
 
 from tests.base_django import BaseDjangoTest
 
@@ -22,7 +23,6 @@ class ProfileTest(BaseDjangoTest):
     def findForm(self):
         self.form = self.driver.find_element_by_css_selector("form[name='profile_form']")
         self.name = self.form.find_element_by_name('name')
-        self.email = self.form.find_element_by_name('email')
         self.active = self.form.find_element_by_name('is_active')
         self.submit_button = self.form.find_element_by_name('submit')
 
@@ -94,9 +94,10 @@ class ProfileTest(BaseDjangoTest):
     def test_change_email(self):
         self.findEditForm()
         try:
+            self.email = self.form.find_element_by_name('email')
             self.email.clear()
             self.assertTrue(False)
-        except InvalidElementStateException:
+        except NoSuchElementException or InvalidElementStateException:
             pass
 
     def test_change_status(self):

@@ -122,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "fa"
 
-TIME_ZONE = 'CET'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -170,4 +170,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 import django_heroku
 django_heroku.settings(locals())
 
-AUTO_REJECT_TIMEOUT_MINUTES = 10
+AUTO_REJECT_TIMEOUT_MINUTES = 1
