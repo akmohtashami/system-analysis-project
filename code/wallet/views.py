@@ -54,7 +54,7 @@ class UserRialChargeView(View):
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
                 if created:
-                    send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " %charge_amount) +
+                    send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " % charge_amount) +
                                "<a href=" + SITE_URL + reverse("users:register_with_link", args=(user.link,)) + ">" +
                                _("here") + "</a>" +
                                _(" to register and use your money.")

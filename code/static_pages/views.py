@@ -31,9 +31,11 @@ class SendEmailToManagersView(View):
             active_admins = User.objects.filter(type=UserType.Admin).filter(is_active=True)
 
             if (send_email(_('Feedback'),
-                           render_to_string('static_pages/email.html', context={"name": request.POST['name'],
-                                                                         "email": request.POST['email'],
-                                                                         "text": request.POST['text']}),
+                           render_to_string('static_pages/email.html', context={
+                               "name": request.POST['name'],
+                               "email": request.POST['email'],
+                               "text": request.POST['text']
+                           }),
                            active_admins)):
                 messages.success(request, _('Your email has been send successfully.'))
             else:
