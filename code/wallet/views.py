@@ -58,7 +58,7 @@ class UserRialChargeView(View):
                         url = LOCAL_URL
                     else:
                         url = PROXYPAY_URL
-                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " %charge_amount) +
+                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " % charge_amount) +
                             "<a href=" + url + reverse("users:register_with_link", args=(user.link,)) + ">" +
                             _("here") + "</a>" +
                             _(" to register and use your money.")
