@@ -170,4 +170,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 import django_heroku
 django_heroku.settings(locals())
 
-AUTO_REJECT_TIMEOUT_MINUTES = 1
+AUTO_REJECT_TIMEOUT_MINUTES = 10
