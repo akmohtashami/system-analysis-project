@@ -44,8 +44,19 @@ class LoginForm(AuthenticationForm):
     }
 
 
-class ChangePasswordForm(SetPasswordForm):
-    pass
+class ChangePasswordForm(forms.ModelForm, RepeatPasswordForm):
+    class Meta:
+        model = User
+        fields = []
+        field_classes = []
+
+    def save(self, commit=True):
+        user = super(ChangePasswordForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
 
 
 class SendEmailToUsersForm(forms.Form):

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models import F
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views import View
@@ -12,6 +12,7 @@ from django.views import View
 from base.models import Config
 from base.views import LoginRequiredView, AdminRequiredView
 from proxypay.settings import SITE_URL
+from services.models import ServiceType
 from users.models import User
 from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm, ExchangeForm, \
     ExchangeConfirmationForm
@@ -41,7 +42,8 @@ class UserRialChargeView(View):
             initial_data = {}
         form = RialChargeForm(initial=initial_data)
         return render(request, "wallet/rial_charge.html", context={
-            "form": form
+            "form": form,
+            "fee": get_object_or_404(ServiceType,short_name="withdraw").fee
         })
 
     def post(self, request):
@@ -49,8 +51,9 @@ class UserRialChargeView(View):
         if form.is_valid():
             charge_amount = form.cleaned_data["amount"]
             receiver = form.cleaned_data["email"]
-            fee = 0  # TODO: Calculate fee
-            due_amount = charge_amount * (1 + fee)
+            withdraw = get_object_or_404(ServiceType, short_name="withdraw")
+            fee = charge_amount * withdraw.fee / 100.0
+            due_amount = charge_amount + fee
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
                 if created:
@@ -75,8 +78,8 @@ class UserRialChargeView(View):
                 })
 
         return render(request, "wallet/rial_charge.html", context={
-
-            "form": form
+            "form": form,
+            "fee": get_object_or_404(ServiceType,short_name="withdraw").fee
         })
 
 

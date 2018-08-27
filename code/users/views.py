@@ -104,11 +104,11 @@ class ChangePasswordView(LoginRequiredView):
         })
 
     def get(self, request):
-        form = ChangePasswordForm(request.user)
+        form = ChangePasswordForm(instance=request.user)
         return self.render_form(request, form)
 
     def post(self, request):
-        form = ChangePasswordForm(request.user, request.POST)
+        form = ChangePasswordForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, _('Your password was successfully updated.'))

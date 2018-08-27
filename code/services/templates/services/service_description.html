@@ -5,9 +5,19 @@
 {% block content %}
     <h1>{{ service.name }}</h1>
     <div id="description">{{ service.description_html | safe}}</div>
+    <h5>{% trans 'currency' %}</h5>
+    {{ currency }}
+    <h5>{% trans 'Fee' %}</h5>
+    %{{ fee }}
     {% if form %}
         <hr />
         {% trans 'Submit' as submit_button %}
         {% include 'form.html' with form=form form_name='request_fill_form' submit_button_text=submit_button %}
     {% endif %}
 {% endblock %}
+
+
+
+
+
+

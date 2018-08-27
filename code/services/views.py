@@ -49,14 +49,14 @@ class ServiceTypeDescriptionView(View):
         service = get_object_or_404(ServiceType,
                                     short_name=service_name,
                                     is_active=True)
-        form = self.form(initial={
-            'currency': service.currency
-        }) \
+        form = self.form() \
             if service.user_can_make_request(request.user) \
             else None
         return render(request, "services/service_description.html", context={
             "service": service,
-            "form": form
+            "form": form,
+            "currency": service.currency,
+            "fee": service.fee
         })
 
     def post(self, request, service_name):

@@ -12,11 +12,9 @@ class AddServiceTypeForm(forms.ModelForm):
 
 
 class MakeRequestForm(forms.ModelForm):
-    currency = forms.CharField(required=False, disabled=True)
-
     class Meta:
         model = ServiceRequest
-        fields = ['amount', 'currency', 'description']
+        fields = ['amount', 'description']
         widgets = {
             'amount': forms.TextInput()
         }

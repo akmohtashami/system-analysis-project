@@ -28,6 +28,9 @@ class UserType(Enum):
                 list.append(i.name)
         return tuple((i, i) for i in list)
 
+    def __str__(self):
+        return self.name
+
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
