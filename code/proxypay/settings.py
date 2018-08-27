@@ -144,8 +144,10 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = "users:login"
-LOCAL_URL = "localhost:8001"
-PROXYPAY_URL = "https://sheltered-scrubland-78674.herokuapp.com/"
+if DEBUG:
+    SITE_URL = "localhost:8001"
+else:
+    SITE_URL = "https://sheltered-scrubland-78674.herokuapp.com/"
 
 
 SUI_DROPDOWN_WRAPPER = (

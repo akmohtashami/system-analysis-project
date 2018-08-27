@@ -34,7 +34,7 @@
               <td>{{ service_request.description }}</td>
             </tr>
           </tbody>
-            {% if is_pending or is_processing %}
+            {% if is_pending or is_processing or is_done %}
             <tfoot>
                 <tr>
                     <th colspan="2">
@@ -42,8 +42,10 @@
                             {% if is_pending %}
                                 <button type="submit" class="ui tiny button primary" name="accept_button">{% trans 'Accept' %}</button>
                             {% elif is_processing %}
-                                <button type="submit" class="ui tiny button primary" name="reject_button">{% trans 'Reject' %}</button>
+                                <button type="submit" class="ui tiny button primary" name="reject_button">{% trans 'Release' %}</button>
                                 <button type="submit" class="ui tiny button primary" name="finish_button">{% trans 'Done' %}</button>
+                            {% elif is_done %}
+                                <button type="submit" class="ui tiny button primary" name="report_button">{% trans 'Report' %}</button>
                             {% endif %}
                         </div>
                     </th>

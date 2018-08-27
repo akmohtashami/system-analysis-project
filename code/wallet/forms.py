@@ -92,4 +92,8 @@ class ExchangeConfirmationForm(forms.Form):
         return data
 
 
-
+class ReportForm(forms.Form):
+    text = forms.CharField(
+        label=_("text"),
+        widget=forms.Textarea,
+    )

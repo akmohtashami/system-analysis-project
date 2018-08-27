@@ -11,7 +11,7 @@ from django.views import View
 
 from base.models import Config
 from base.views import LoginRequiredView, AdminRequiredView
-from proxypay.settings import PROXYPAY_URL, DEBUG, LOCAL_URL
+from proxypay.settings import SITE_URL
 from users.models import User
 from wallet.forms import RialChargeForm, ExchangeSimulationForm, CompanyRialChargeForm, ExchangeForm, \
     ExchangeConfirmationForm
@@ -54,21 +54,13 @@ class UserRialChargeView(View):
             if "confirm_button" in request.POST:
                 user, created = User.objects.get_or_create(email=receiver)
                 if created:
-                    if DEBUG == True:
-                        url = LOCAL_URL
-                    else:
-                        url = PROXYPAY_URL
-                    if send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " %charge_amount) +
-                            "<a href=" + url + reverse("users:register_with_link", args=(user.link,)) + ">" +
-                            _("here") + "</a>" +
-                            _(" to register and use your money.")
-                            , [user, ]):
-                        messages.success(request, _('Your email has been send successfully.'))
-                    else:
-                        messages.warning(request, _('Your email has not been send.'))
+                    send_email(_("Register in ProxyPay"), _("Your account has been charged %f IRR. Click " %charge_amount) +
+                               "<a href=" + SITE_URL + reverse("users:register_with_link", args=(user.link,)) + ">" +
+                               _("here") + "</a>" +
+                               _(" to register and use your money.")
+                               , [user, ])
                 user.wallets.filter(currency=Currency.IRR).update(credit=F('credit') + charge_amount)
                 Wallet.get_company_wallets().filter(currency=Currency.IRR).update(credit=F('credit') + fee)
-                user.notify_charge(charge_amount)
                 messages.success(request, _("Transaction completed successfully"))
                 if user == request.user:
                     return HttpResponseRedirect(reverse("wallet:wallets"))

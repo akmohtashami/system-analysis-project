@@ -12,6 +12,7 @@ urlpatterns = [
     re_path(r'^list/$', RequestsListView.as_view(), name="requests_list"),
     re_path(r'^type/list/$', ServiceTypeListView.as_view(), name="service_type_list"),
     path('<uuid:link>/', RequestDetailsView.as_view(), name="details"),
+    path('report/<uuid:link>/', ReportView.as_view(), name="report"),
     re_path(r'^type/(?P<service_name>{})/$'.format(ServiceType.SHORT_NAME_REGEX),
             ServiceTypeDetailsView.as_view(), name="service_type_details"),
     re_path(r'^(?P<service_name>{})/$'.format(ServiceType.SHORT_NAME_REGEX),

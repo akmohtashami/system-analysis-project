@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -55,12 +55,12 @@ class RegisterWithLinkView(NotAuthenticatedView):
         })
 
     def get(self, request, link):
-        user = User.objects.filter(link=link)[0]
+        user = get_object_or_404(User,link=link)
         form = RegisterWithLinkForm()
         return self.render_form(request, form, user)
 
     def post(self, request, link):
-        user = User.objects.filter(link=link)[0]
+        user = get_object_or_404(User,link=link)
         form = RegisterWithLinkForm(request.POST, instance=user)
         if form.is_valid():
             form.update(user)
@@ -175,10 +175,9 @@ class ProfileView(AdminRequiredView):
         })
 
     def get(self, request, link):
-        user = User.objects.filter(link=link)[0]
-        form = ProfileForm(initial={
-            'name': user.name,
-            'is_active': user.is_active
+        user = get_object_or_404(User, link=link)
+        form = ProfileForm(instance=user, initial={
+            "type": user.type.name
         })
         return self.render_form(request, form, user)
 

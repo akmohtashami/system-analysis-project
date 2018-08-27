@@ -5,10 +5,14 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.db import transaction
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 from proxypay.fields import EnumField
+from proxypay.settings import SITE_URL
+from utils.mail import send_email
 
 
 class UserType(Enum):
@@ -17,8 +21,12 @@ class UserType(Enum):
     Admin = 2
     System = 3
     @classmethod
-    def choices(cls):
-        return tuple((i.name, i.name) for i in cls if i.name != "System")
+    def choices(cls, x='Customer'):
+        list = [x]
+        for i in cls:
+            if i.name != "System" and i.name != x:
+                list.append(i.name)
+        return tuple((i, i) for i in list)
 
 
 class UserManager(BaseUserManager):
@@ -94,8 +102,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
 
-    def notify_charge(self, amount):
-        pass
+    def notify_change_status(self, request):
+        send_email(_('Change Status'),
+                   render_to_string('users/change_status_email.html',
+                                    context={"new_status": request.status,
+                                             "req_url": SITE_URL + reverse("services:details",   args=(request.link,))}),
+                   [self, ])
 
     @transaction.atomic
     def save(self, *args, **kwargs):

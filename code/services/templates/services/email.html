@@ -1,0 +1,9 @@
+{% load i18n %}
+
+{% blocktrans with name=name email=email%}
+    New report received from {{ name }} ({{ email }}) for request below:
+{% endblocktrans %}
+<br>
+<a href="{{ req_url }}">request</a>
+<hr />
+{{ text }}

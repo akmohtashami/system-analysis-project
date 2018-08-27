@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from selenium.common.exceptions import StaleElementReferenceException
 
@@ -21,7 +22,7 @@ class RegisterWithLinkTest(BaseDjangoTest):
         self.form = self.driver.find_element_by_css_selector("form[name='charge_confirm_form']")
         self.submit_button = self.form.find_element_by_name('confirm_button')
         self.submitForm(refill=False, element='confirm_button')
-        link = User.objects.filter(email="test@test.com")[0].link
+        link = get_object_or_404(User, email="test@test.com").link
         self.getURL(reverse('users:register_with_link', args=(link, )))
 
     def findAndFillForm(self):

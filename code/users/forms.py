@@ -76,12 +76,27 @@ class AddUserForm(forms.ModelForm, RepeatPasswordForm):
 
 
 class ProfileForm(forms.ModelForm):
+    error_messages = {
+        'customer_with_salary': _("Customer/admin monthly salary should be zero."),
+    }
+    type = forms.ChoiceField(choices=UserType.choices())
+
     class Meta:
         model = User
-        fields = ['name', 'is_active']
+        fields = ['name', 'monthly_salary', 'type', 'is_active']
         field_classes = []
 
     def update(self, user, commit=True):
         if commit:
             user.save(force_update=True)
         return user
+
+    def clean_monthly_salary(self):
+        monthly_salary = self.cleaned_data.get("monthly_salary")
+        type = self.data.get("type")
+        if monthly_salary != 0 and type != 'Employee':
+            raise forms.ValidationError(
+                ProfileForm.error_messages['customer_with_salary'],
+                code='customer_with_salary',
+            )
+        return monthly_salary
